@@ -1,16 +1,12 @@
 ﻿namespace Models.User.Requests
 {
-    public class UpdateUserRequest
+    public class DeleteUserRequest
     {
-        public string Login;
-        public string Password;
-        public string Name;
+        public Guid ID;
 
-        public UpdateUserRequest(string login, string password, string name)
+        public DeleteUserRequest(Guid id)
         {
-            Login = login;
-            Password = password;
-            Name = name;
+            ID = id;
         }
     }
 }
