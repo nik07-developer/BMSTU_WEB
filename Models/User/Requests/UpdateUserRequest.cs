@@ -2,13 +2,14 @@
 {
     public class UpdateUserRequest
     {
-        public string Login;
+        public Guid ID;
+
         public string Password;
         public string Name;
 
-        public UpdateUserRequest(string login, string password, string name)
+        public UpdateUserRequest(Guid id, string password, string name)
         {
-            Login = login;
+            ID = id;
             Password = password;
             Name = name;
         }

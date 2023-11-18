@@ -2,15 +2,11 @@
 {
     public class GetUserRequest
     {
-        public string Login;
-        public string Password;
-        public string Name;
+        public Guid ID;
 
-        public GetUserRequest(string login, string password, string name)
+        public GetUserRequest(Guid id)
         {
-            Login = login;
-            Password = password;
-            Name = name;
+            ID = id;
         }
     }
 }

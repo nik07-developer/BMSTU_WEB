@@ -2,13 +2,15 @@
 {
     public class DeleteUserResponse
     {
-        public int Code;
-        public Guid ID;
+        public const int OK = 0;
+        public const int NOT_EXISTS = 1;
+        public const int DB_ERROR = 2;
 
-        public DeleteUserResponse(Guid id)
+        public int Code;
+
+        public DeleteUserResponse()
         {
-            ID = id;
-            Code = 0;
+            Code = OK;
         }
 
         public DeleteUserResponse(int returnCode)

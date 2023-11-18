@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Web.DTO.User;
 using Models.User.Requests;
 using Models.User.Responses;
-using Logic.Handlers.User;
+using Handlers.User;
 
 namespace Web.Controllers
 {
@@ -11,11 +11,20 @@ namespace Web.Controllers
     [Route("/users")]
     public class UserController : ControllerBase
     {
-        private readonly CreateUserHandler _handler;
+        private readonly CreateUserHandler _createHandler;
+        private readonly UpdateUserHandler _updateHandler;
+        private readonly DeleteUserHandler _deleteHandler;
+        private readonly GetUserHandler _getHandler;
 
-        public UserController(CreateUserHandler handler)
+        public UserController(CreateUserHandler createHandler,
+                              UpdateUserHandler updateHandler,
+                              DeleteUserHandler deleteHandler,
+                              GetUserHandler getHandler)
         {
-            _handler = handler;
+            _createHandler = createHandler;
+            _updateHandler = updateHandler;
+            _deleteHandler = deleteHandler;
+            _getHandler = getHandler;
         }
 
         [HttpPost]
@@ -24,12 +33,14 @@ namespace Web.Controllers
             Console.WriteLine($"Hello {user.Name} aka {user.Login}:) your password: $#%{user.Password}^&*");
 
             var rq = new CreateUserRequest(user.Login, user.Password, user.Name);
-            var res = _handler.Handle(rq);
+            var res = _createHandler.Handle(rq);
 
-            if (res.Code != 0)
-                return BadRequest();
-
-            return Ok(res.ID);
+            return res.Code switch
+            {
+                CreateUserResponse.OK => Ok(res.ID),
+                CreateUserResponse.ALREADY_EXISTS => BadRequest(),
+                _ => BadRequest(),
+            };
         }
 
         [HttpGet]

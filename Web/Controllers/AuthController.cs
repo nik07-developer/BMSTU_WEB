@@ -4,12 +4,11 @@ using Web.DTO.User;
 using Models.User.Requests;
 using Models.User.Responses;
 
-using Logic.Handlers.User;
+using Handlers.User;
 using Microsoft.AspNetCore.Authorization;
 using System.Net;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -30,7 +29,7 @@ namespace Web.Controllers
         {
             Console.WriteLine("Login Call");
 
-            var claims = new List<Claim> { new Claim(ClaimTypes.Name, login), new Claim("id", "id") };
+            var claims = new List<Claim> { new Claim(ClaimTypes.Name, login), new Claim(AuthOptions.ID_CLAIM_TYPE, Guid.Empty.ToString()) };
             var jwt = new JwtSecurityToken(
                     issuer: AuthOptions.ISSUER,
                     audience: AuthOptions.AUDIENCE,
@@ -39,7 +38,6 @@ namespace Web.Controllers
                     signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
 
             var token = new JwtSecurityTokenHandler().WriteToken(jwt);
-
             var msg = new HttpResponseMessage();
             msg.Headers.Add("jwt", token);
 
@@ -50,7 +48,10 @@ namespace Web.Controllers
         [Authorize]
         public ActionResult<string> Logout()
         {
-            Console.WriteLine("Logout Call");
+            var id = this.GetID();
+
+            Console.WriteLine($"Logout Call for {id}");
+
             return Ok("foo");
         }
     }

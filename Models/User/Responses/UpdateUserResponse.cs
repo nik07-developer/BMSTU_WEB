@@ -1,17 +1,19 @@
 ﻿namespace Models.User.Responses
 {
-    public class GetUserResponse
+    public class UpdateUserResponse
     {
-        public int Code;
-        public Guid ID;
+        public const int OK = 0;
+        public const int NOT_EXISTS = 1;
+        public const int DB_ERROR = 2;
 
-        public GetUserResponse(Guid id)
+        public int Code;
+
+        public UpdateUserResponse()
         {
-            ID = id;
-            Code = 0;
+            Code = OK;
         }
 
-        public GetUserResponse(int returnCode)
+        public UpdateUserResponse(int returnCode)
         {
             Code = returnCode;
         }

@@ -1,4 +1,4 @@
-using Logic.Handlers.User;
+using Handlers.User;
 using MongoRepository;
 
 using MongoDB.Driver;
@@ -19,6 +19,9 @@ var repo = new UserRepository();
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton<CreateUserHandler, CreateUserHandler>();
+builder.Services.AddSingleton<UpdateUserHandler, UpdateUserHandler>();
+builder.Services.AddSingleton<DeleteUserHandler, DeleteUserHandler>();
+builder.Services.AddSingleton<GetUserHandler, GetUserHandler>();
 
 // Add services to the container.
 
@@ -62,6 +65,7 @@ app.Run();
 
 public class AuthOptions
 {
+    public const string ID_CLAIM_TYPE = "id";
     public const string ISSUER = "MyAuthServer"; // издатель токена
     public const string AUDIENCE = "MyAuthClient"; // потребитель токена
     const string KEY = "mysupersecret_secretkey!123";   // ключ для шифрации
