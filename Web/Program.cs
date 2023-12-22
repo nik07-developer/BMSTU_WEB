@@ -10,18 +10,21 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using DataAccess.Repositories;
+using DataAccess.Interfaces;
 
 
-Console.WriteLine("Hello, world!");
+const string allowAllPolicy = "_allow_all";
 
 var repo = new UserRepository();
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<CreateUserHandler, CreateUserHandler>();
-builder.Services.AddSingleton<UpdateUserHandler, UpdateUserHandler>();
-builder.Services.AddSingleton<DeleteUserHandler, DeleteUserHandler>();
+builder.Services.AddSingleton<CreateUserHandler>();
+builder.Services.AddSingleton<UpdateUserHandler>();
+builder.Services.AddSingleton<DeleteUserHandler>();
 builder.Services.AddSingleton<GetUserHandler, GetUserHandler>();
+builder.Services.AddSingleton<IUserRepository, UserRepositoryPlaceholder>();
 
 // Add services to the container.
 
@@ -29,6 +32,16 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// ÐÑƒÐ¶Ð½Ð¾ Ð´Ð»Ñ Ð²Ð·Ð°Ð¸Ð¼Ð¾Ð´ÐµÐ¹ÑÑ‚Ð²Ð¸Ñ Ð½Ð° Ñ€Ð°Ð·Ð½Ñ‹Ñ… Ð´Ð¾Ð¼ÐµÐ½Ð°Ñ….
+// Ð’ Ð½Ð°ÑˆÐµÐ¼ ÑÐ»ÑƒÑ‡Ð°Ðµ localhost:3000 Ð¸ localhost:5000
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(allowAllPolicy, policy =>
+    {
+        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
+});
 
 builder.Services.AddAuthorization();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -48,8 +61,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 var app = builder.Build();
 
+app.UseCors(allowAllPolicy);
 app.UseAuthentication();
-app.UseAuthorization();
+app.UseAuthorization();  // ... ÑƒÐ¶Ðµ Ð±Ñ‹Ð»Ð° Ð² ÑÑ‚Ñ€Ð¾ÐºÐµ 46?
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -59,16 +73,16 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthorization();
+app.UseAuthorization();  // ... ÑƒÐ¶Ðµ Ð±Ñ‹Ð»Ð° Ð² ÑÑ‚Ñ€Ð¾ÐºÐµ 66?
 app.MapControllers();
 app.Run();
 
 public class AuthOptions
 {
     public const string ID_CLAIM_TYPE = "id";
-    public const string ISSUER = "MyAuthServer"; // èçäàòåëü òîêåíà
-    public const string AUDIENCE = "MyAuthClient"; // ïîòðåáèòåëü òîêåíà
-    const string KEY = "mysupersecret_secretkey!123";   // êëþ÷ äëÿ øèôðàöèè
+    public const string ISSUER = "MyAuthServer";
+    public const string AUDIENCE = "MyAuthClient";
+    const string KEY = "mysupersecret_secretkey!123";  // Ñ ÑÑ‚Ñ‹Ñ€Ð¸Ð»
     public static SymmetricSecurityKey GetSymmetricSecurityKey() =>
         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(KEY));
 }

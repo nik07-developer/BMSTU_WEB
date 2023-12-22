@@ -16,7 +16,7 @@ namespace Handlers.User
 
         public virtual DeleteUserResponse Handle(DeleteUserRequest request)
         {
-            var response = new DeleteUserResponse(request.ID);
+            var response = new DeleteUserResponse();
 
             try
             {
