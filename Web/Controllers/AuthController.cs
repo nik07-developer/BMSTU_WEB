@@ -22,7 +22,7 @@ namespace Web.Controllers
 		{
             // Mock only user with credentials abc:123
             if (body.Login != "abc" || body.Password != "123")
-                return BadRequest();
+                return Forbid();
 
             var id = Guid.Empty;
             var token = CreateToken(id);

@@ -50,6 +50,9 @@ namespace Web.Controllers
         [Authorize]
         public ActionResult<User> Get([FromQuery(Name = "user_id")] Guid userId)
         {
+            if (this.GetID() != userId)
+                return Forbid();
+
             var rq = new GetUserRequest(userId);
             var res = _getHandler.Handle(rq);
 
@@ -66,6 +69,9 @@ namespace Web.Controllers
         public IActionResult Patch([FromQuery(Name ="user_id")] Guid userId,
                                    [FromBody] Dictionary<string, string> userChanges)
         {
+            if (this.GetID() != userId)
+                return Forbid();
+
             var rq = new UpdateUserRequest(userId, userChanges);
             var res = _updateHandler.Handle(rq);
 
@@ -82,6 +88,9 @@ namespace Web.Controllers
         [Authorize]
         public IActionResult Delete([FromQuery(Name = "user_id")] Guid userId)
         {
+            if (this.GetID() != userId)
+                return Forbid();
+
             var rq = new DeleteUserRequest(userId);
             var res = _deleteHandler.Handle(rq);
 
