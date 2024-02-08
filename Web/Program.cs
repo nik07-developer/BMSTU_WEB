@@ -1,4 +1,6 @@
 using Handlers.User;
+using Handlers.Character;
+
 using MongoRepository;
 
 using MongoDB.Driver;
@@ -16,15 +18,20 @@ using DataAccess.Interfaces;
 
 const string allowAllPolicy = "_allow_all";
 
-var repo = new UserRepository();
-
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddSingleton<IUserRepository, UserRepositoryStub>();
 builder.Services.AddSingleton<CreateUserHandler>();
 builder.Services.AddSingleton<UpdateUserHandler>();
 builder.Services.AddSingleton<DeleteUserHandler>();
-builder.Services.AddSingleton<GetUserHandler, GetUserHandler>();
-builder.Services.AddSingleton<IUserRepository, UserRepositoryPlaceholder>();
+builder.Services.AddSingleton<GetUserHandler>();
+
+builder.Services.AddSingleton<ICharacterRepository, CharacterRepositoryStub>();
+builder.Services.AddSingleton<CreateCharacterHandler>();
+builder.Services.AddSingleton<UpdateCharacterHandler>();
+builder.Services.AddSingleton<DeleteCharacterHandler>();
+builder.Services.AddSingleton<GetCharactersHandler>();
+builder.Services.AddSingleton<GetCharacterHandler>();
 
 // Add services to the container.
 

@@ -25,7 +25,7 @@ namespace Web.Controllers
                 return Forbid();
 
             var id = Guid.Empty;
-            var token = CreateToken(id);
+            var token = ControllerExtensions.CreateToken(id);
 
             return Ok($"{{\"auth_token\":\"{token}\"}}");
         }
@@ -34,25 +34,10 @@ namespace Web.Controllers
         [Authorize]
         public IActionResult Refresh()
         {
-            var id = this.GetID();
-            var token = CreateToken(id);
+            var id = this.GetUID();
+            var token = ControllerExtensions.CreateToken(id);
 
             return Ok($"{{\"auth_token\":\"{token}\"}}");
-        }
-
-        private static string CreateToken(Guid id)
-        {
-            var claims = new List<Claim> { new(AuthOptions.ID_CLAIM_TYPE, id.ToString()) };
-            var jwt = new JwtSecurityToken(
-                    issuer: AuthOptions.ISSUER,
-                    audience: AuthOptions.AUDIENCE,
-                    claims: claims,
-                    expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(2)),  // да всё, не рендерятся твои комменты. Используй нормальную кодировку
-                    signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
-
-            var token = new JwtSecurityTokenHandler().WriteToken(jwt);
-
-            return token;
         }
     }
 }

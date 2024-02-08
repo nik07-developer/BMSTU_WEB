@@ -2,6 +2,6 @@
 {
     public class CharacterChangeDTO
     {
-        public Dictionary<string, string> Changes;
+        public Dictionary<string, string> Changes { get; set; }
     }
 }

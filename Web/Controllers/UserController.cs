@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Runtime.InteropServices;
 using DnsClient;
 using System.Xml.Linq;
+using Web.Controllers.Extensions;
 
 namespace Web.Controllers
 {
@@ -49,35 +50,34 @@ namespace Web.Controllers
             };
         }
 
-        [HttpGet]
+        [HttpGet("/users/{user_id}")]
         [Authorize]
-        public ActionResult<User> Get([FromQuery(Name = "user_id")] Guid userId)
+        public ActionResult<UserDTO> Get(Guid user_id)
         {
-            if (this.GetID() != userId)
+            if (this.GetUID() != user_id)
                 return Forbid();
 
-            var rq = new GetUserRequest(userId);
+            var rq = new GetUserRequest(user_id);
             var res = _getHandler.Handle(rq);
-            var u = res.User;
 
             return res.Code switch
             {
-                GetUserResponse.OK => Ok(new User(u.ID, u.Login, u.Name, u.Password)),
+                GetUserResponse.OK => Ok(ConvertDTO.Convert(res.User)),
                 GetUserResponse.NOT_EXISTS => NotFound(),
                 GetUserResponse.DB_ERROR => StatusCode(503),
                 _ => BadRequest()
             };
         }
 
-        [HttpPatch]
+        [HttpPatch("/users/{user_id}")]
         [Authorize]
-        public IActionResult Patch([FromQuery(Name ="user_id")] Guid userId,
+        public IActionResult Patch(Guid user_id,
                                    [FromBody] Dictionary<string, string> userChanges)
         {
-            if (this.GetID() != userId)
+            if (this.GetUID() != user_id)
                 return Forbid();
 
-            var rq = new UpdateUserRequest(userId, userChanges);
+            var rq = new UpdateUserRequest(user_id, userChanges);
             var res = _updateHandler.Handle(rq);
 
             return res.Code switch
@@ -89,14 +89,14 @@ namespace Web.Controllers
             };
         }
 
-        [HttpDelete]
+        [HttpDelete("/users/{user_id}")]
         [Authorize]
-        public IActionResult Delete([FromQuery(Name = "user_id")] Guid userId)
+        public IActionResult Delete(Guid user_id)
         {
-            if (this.GetID() != userId)
+            if (this.GetUID() != user_id)
                 return Forbid();
 
-            var rq = new DeleteUserRequest(userId);
+            var rq = new DeleteUserRequest(user_id);
             var res = _deleteHandler.Handle(rq);
 
             return res.Code switch

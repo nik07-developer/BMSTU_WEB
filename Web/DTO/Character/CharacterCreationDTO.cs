@@ -2,7 +2,7 @@
 {
     public class CharacterCreationDTO
     {
-        public string Name;
-        public string Data;
+        public string Name { get; set; }
+        public string Data { get; set; }
     }
 }
