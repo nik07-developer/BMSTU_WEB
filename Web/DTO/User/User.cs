@@ -1,10 +1,13 @@
 ﻿namespace Web.DTO.User
 {
-    public class User
+    public class User(Guid id,
+                string login,
+                string password,
+                string name)
     {
-        public Guid ID { get; set; }
-        public string Login { get; set; }
-        public string Password { get; set; }
-        public string Name { get; set; }
+        public Guid ID = id;
+        public string Login = login;
+        public string Password = password;
+        public string Name = name;
     }
 }

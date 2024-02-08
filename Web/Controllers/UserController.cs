@@ -7,6 +7,8 @@ using Handlers.User;
 using System;
 using Microsoft.AspNetCore.Authorization;
 using System.Runtime.InteropServices;
+using DnsClient;
+using System.Xml.Linq;
 
 namespace Web.Controllers
 {
@@ -56,10 +58,11 @@ namespace Web.Controllers
 
             var rq = new GetUserRequest(userId);
             var res = _getHandler.Handle(rq);
+            var u = res.User;
 
             return res.Code switch
             {
-                GetUserResponse.OK => Ok(new User() { ID = res.ID, Login = res.Login, Name = res.Name, Password = res.Password }),
+                GetUserResponse.OK => Ok(new User(u.ID, u.Login, u.Name, u.Password)),
                 GetUserResponse.NOT_EXISTS => NotFound(),
                 GetUserResponse.DB_ERROR => StatusCode(503),
                 _ => BadRequest()
