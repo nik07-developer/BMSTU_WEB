@@ -41,7 +41,8 @@ namespace Web.Controllers
             return res.Code switch
             {
                 CreateUserResponse.OK => Ok(res.ID),
-                CreateUserResponse.ALREADY_EXISTS => BadRequest(),
+                CreateUserResponse.ALREADY_EXISTS => Forbid(),
+                CreateUserResponse.DB_ERROR => StatusCode(503),
                 _ => BadRequest()
             };
         }
@@ -60,6 +61,7 @@ namespace Web.Controllers
             {
                 GetUserResponse.OK => Ok(new User() { ID = res.ID, Login = res.Login, Name = res.Name, Password = res.Password }),
                 GetUserResponse.NOT_EXISTS => NotFound(),
+                GetUserResponse.DB_ERROR => StatusCode(503),
                 _ => BadRequest()
             };
         }
@@ -79,7 +81,7 @@ namespace Web.Controllers
             {
                 UpdateUserResponse.OK => Ok(),
                 UpdateUserResponse.NOT_EXISTS => NotFound(),
-                UpdateUserResponse.DB_ERROR => BadRequest(),
+                UpdateUserResponse.DB_ERROR => StatusCode(503),
                 _ => BadRequest()
             };
         }
@@ -98,7 +100,7 @@ namespace Web.Controllers
             {
                 DeleteUserResponse.OK => Ok(),
                 DeleteUserResponse.NOT_EXISTS => NotFound(),
-                DeleteUserResponse.DB_ERROR => BadRequest(),
+                DeleteUserResponse.DB_ERROR => StatusCode(503),
                 _ => BadRequest()
             };
         }
