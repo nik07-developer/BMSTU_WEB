@@ -13,7 +13,8 @@ namespace DataAccess.Interfaces
     {
         public Guid Create(CreateUserDTO user);
         public UserDTO Get(Guid id);
-        public void Update(Guid id, UpdateUserDTO user);
+        public void UpdateName(Guid id, string name);
+        public void UpdatePassword(Guid id, string password);
         public void Delete(Guid id);
     }
 }

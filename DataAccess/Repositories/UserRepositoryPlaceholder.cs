@@ -28,9 +28,14 @@ namespace DataAccess.Repositories
 			return new UserDTO(id, "login", "passowrd", "name");
 		}
 
-		public void Update(Guid id, UpdateUserDTO user)
+		public void UpdateName(Guid id, string name)
 		{
 
 		}
-	}
+
+        public void UpdatePassword(Guid id, string password)
+        {
+
+        }
+    }
 }

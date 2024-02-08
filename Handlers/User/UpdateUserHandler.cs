@@ -20,16 +20,25 @@ namespace Handlers.User
 
             try
             {
-                var dto = new UpdateUserDTO(); // ToDo
-                _repository.Update(request.ID, dto);
+                if (request.Changes.TryGetValue("name", out var newName))
+                {
+                    _repository.UpdateName(request.ID, newName);
+                }
+
+                if (request.Changes.TryGetValue("password", out var newPassword))
+                {
+                    _repository.UpdatePassword(request.ID, newPassword);
+                }
+
+                response.Code = UpdateUserResponse.OK;
             }
             catch (ArgumentException)
             {
-                response = new UpdateUserResponse(UpdateUserResponse.NOT_EXISTS);
+                response.Code = UpdateUserResponse.NOT_EXISTS;
             }
             catch
             {
-                response = new UpdateUserResponse(UpdateUserResponse.DB_ERROR);
+                response.Code = UpdateUserResponse.DB_ERROR;
             }
 
             return response;

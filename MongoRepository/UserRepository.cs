@@ -3,6 +3,7 @@ using DataAccess.DTO;
 
 using MongoDB.Driver;
 using MongoDB.Bson.Serialization.Attributes;
+using Models.User;
 
 namespace MongoRepository
 {
@@ -37,7 +38,7 @@ namespace MongoRepository
                 Password = user.Password,
                 Name = user.Name
             };
-            
+
             _users.InsertOne(doc);
             return doc.ID;
         }
@@ -53,17 +54,17 @@ namespace MongoRepository
             return new UserDTO(user.ID, user.Login, user.Password, user.Name);
         }
 
-        public void Update(Guid id, UpdateUserDTO user)
+        public void UpdateName(Guid id, string newName)
         {
             var update = Builders<UserDB>.Update.Set(user => user.ID, id);
+            update.Set(user => user.Name, newName);
+            _users.FindOneAndUpdate(filter: user => user.ID == id, update: update);
+        }
 
-            if (user.IsNameUpdated)
-                update.Set(user => user.Name, user.Name);
-
-            if (user.IsPasswordUpdated)
-                update.Set(user => user.Password, user.Password);
-
-            
+        public void UpdatePassword(Guid id, string newPassword)
+        {
+            var update = Builders<UserDB>.Update.Set(user => user.ID, id);
+            update.Set(user => user.Password, newPassword);
             _users.FindOneAndUpdate(filter: user => user.ID == id, update: update);
         }
     }

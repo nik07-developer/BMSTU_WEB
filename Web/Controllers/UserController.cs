@@ -4,6 +4,9 @@ using Web.DTO.User;
 using Models.User.Requests;
 using Models.User.Responses;
 using Handlers.User;
+using System;
+using Microsoft.AspNetCore.Authorization;
+using System.Runtime.InteropServices;
 
 namespace Web.Controllers
 {
@@ -30,7 +33,7 @@ namespace Web.Controllers
         [HttpPost]
         public ActionResult<Guid> Post([FromBody] UserCreationDTO user)
         {
-            Console.WriteLine($"Hello {user.Name} aka {user.Login}:) your password: $#%{user.Password}^&*");
+            //Console.WriteLine($"Hello {user.Name} aka {user.Login}:) your password: $#%{user.Password}^&*");
 
             var rq = new CreateUserRequest(user.Login, user.Password, user.Name);
             var res = _createHandler.Handle(rq);
@@ -39,33 +42,56 @@ namespace Web.Controllers
             {
                 CreateUserResponse.OK => Ok(res.ID),
                 CreateUserResponse.ALREADY_EXISTS => BadRequest(),
-                _ => BadRequest(),
+                _ => BadRequest()
             };
         }
 
         [HttpGet]
-        public HttpResponseMessage Get()
+        [Authorize]
+        public ActionResult<User> Get([FromQuery(Name = "user_id")] Guid userId)
         {
-            Console.WriteLine("GET");
+            var rq = new GetUserRequest(userId);
+            var res = _getHandler.Handle(rq);
 
-            var response = new HttpResponseMessage(System.Net.HttpStatusCode.NotFound);
-            //response.Headers.Add("Access-Control-Allow-Origin", "*");
-            return response;
+            return res.Code switch
+            {
+                GetUserResponse.OK => Ok(new User() { ID = res.ID, Login = res.Login, Name = res.Name, Password = res.Password }),
+                GetUserResponse.NOT_EXISTS => NotFound(),
+                _ => BadRequest()
+            };
         }
 
-        /*[HttpPatch]
-        public ActionResult<Guid> Patch([FromBody] UserChangeDTO user)
+        [HttpPatch]
+        [Authorize]
+        public IActionResult Patch([FromQuery(Name ="user_id")] Guid userId,
+                                   [FromBody] Dictionary<string, string> userChanges)
         {
-            Console.WriteLine($"Hello {user.Name} aka {user.Login}:) your password: $#%{user.Password}^&*");
+            var rq = new UpdateUserRequest(userId, userChanges);
+            var res = _updateHandler.Handle(rq);
 
-            var rq = new CreateUserRequest(user.Login, user.Password, user.Name);
-            var res = _handler.Handle(rq);
+            return res.Code switch
+            {
+                UpdateUserResponse.OK => Ok(),
+                UpdateUserResponse.NOT_EXISTS => NotFound(),
+                UpdateUserResponse.DB_ERROR => BadRequest(),
+                _ => BadRequest()
+            };
+        }
 
-            if (res.Code != 0)
-                return BadRequest();
+        [HttpDelete]
+        [Authorize]
+        public IActionResult Delete([FromQuery(Name = "user_id")] Guid userId)
+        {
+            var rq = new DeleteUserRequest(userId);
+            var res = _deleteHandler.Handle(rq);
 
-            //return Ok(res.ID);
-        }*/
-
+            return res.Code switch
+            {
+                DeleteUserResponse.OK => Ok(),
+                DeleteUserResponse.NOT_EXISTS => NotFound(),
+                DeleteUserResponse.DB_ERROR => BadRequest(),
+                _ => BadRequest()
+            };
+        }
     }
 }
