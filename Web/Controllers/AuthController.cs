@@ -8,16 +8,14 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using MongoDB.Bson.IO;
 using Microsoft.AspNetCore.Cors;
+using Newtonsoft.Json.Linq;
 
 namespace Web.Controllers
 {
     [ApiController]
     public class AuthController : ControllerBase
     {
-        public AuthController(/*CreateUserHandler handler*/)
-        {
-            //_handler = handler;
-        }
+        public AuthController() { }
 
         [HttpPost("/login")]
 		public IActionResult Login([FromBody] UserLoginDTO body)
@@ -26,9 +24,25 @@ namespace Web.Controllers
             if (body.Login != "abc" || body.Password != "123")
                 return BadRequest();
 
-			Console.WriteLine("Login Call");
+            var id = Guid.Empty;
+            var token = CreateToken(id);
 
-            var claims = new List<Claim> { new Claim(ClaimTypes.Name, body.Login), new Claim(AuthOptions.ID_CLAIM_TYPE, Guid.Empty.ToString()) };
+            return Ok($"{{\"auth_token\":\"{token}\"}}");
+        }
+
+        [HttpPost("/refresh")]
+        [Authorize]
+        public IActionResult Refresh()
+        {
+            var id = this.GetID();
+            var token = CreateToken(id);
+
+            return Ok($"{{\"auth_token\":\"{token}\"}}");
+        }
+
+        private static string CreateToken(Guid id)
+        {
+            var claims = new List<Claim> { new(AuthOptions.ID_CLAIM_TYPE, id.ToString()) };
             var jwt = new JwtSecurityToken(
                     issuer: AuthOptions.ISSUER,
                     audience: AuthOptions.AUDIENCE,
@@ -38,19 +52,7 @@ namespace Web.Controllers
 
             var token = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-            // Возвращать HTTP response плохо, почекай потом что вернётся
-            return Ok($"{{\"auth_token\":\"{token}\"}}");
-        }
-
-        [HttpPost("/logout")]
-        [Authorize]
-        public IActionResult Logout()
-        {
-            var id = this.GetID();
-
-            Console.WriteLine($"Logout Call for {id}");
-
-            return Ok("foo");
+            return token;
         }
     }
 }

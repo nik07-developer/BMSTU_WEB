@@ -73,7 +73,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthorization();  // ... уже была в строке 66?
+//app.UseAuthorization();  // ... уже была в строке 66?
 app.MapControllers();
 app.Run();
 
