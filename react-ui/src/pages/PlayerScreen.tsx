@@ -10,6 +10,7 @@ import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MenuIcon from '@mui/icons-material/Menu';
 import { List, ListItem, Typography, Button, Box, Divider } from "@mui/material";
+import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
 
 
 interface PlayerScreenProps {
@@ -31,18 +32,26 @@ function PlayerScreen({ character }: PlayerScreenProps) {
 		posx: 100,
 		posy: 50
 	}
-	const [widgets] = useState<ScreenWidget[]>([sample_screen_widget]);
+	const [widgets, setWidgets] = useState<ScreenWidget[]>([sample_screen_widget]);
+
+	let newWidgets: ScreenWidget[] = [];
 
 	return (
 		<Box sx={{ display: 'flex' }}>
 			<Box>
 				<IconButton sx={{ m: 2 }} onClick={() => { setLeftOpen(true); }}><MenuIcon /></IconButton>
 				{character && (widgets.map((w: ScreenWidget) => {
-					return w.widget.getHtml(character.data, w.posx, w.posy);
+					return (
+						<Draggable defaultPosition={{x: w.posx, y: w.posy}} onStop={(e: DraggableEvent, data: DraggableData) => {
+							w.posx = data.lastX;
+							w.posy = data.lastY;
+						}}>
+							{w.widget.getHtml(character.data, w.posx, w.posy)}
+						</Draggable>)
 				}))}
 			</Box>
 			<Drawer variant="persistent" anchor="left" open={leftOpen} sx={{ width: 250 }}>
-				<Box display="flex" flexDirection="row" alignItems="center" sx={{backgroundColor:theme.palette.secondary.main}}>
+				<Box display="flex" flexDirection="row" alignItems="center" sx={{ backgroundColor: theme.palette.secondary.main }}>
 					<Typography variant="h5" margin={2}>Character Name</Typography>
 					<IconButton sx={{ m: 2 }} onClick={() => { setLeftOpen(false); }}>
 						{theme.direction === 'ltr' ? <ChevronLeftIcon /> : <ChevronRightIcon />}
@@ -51,11 +60,11 @@ function PlayerScreen({ character }: PlayerScreenProps) {
 				<List sx={{ "& Button": { variant: "text", p: 1, m: -1, minWidth: 1, justifyContent: "left" } }}>
 					<ListItem><Button>Войти</Button></ListItem>
 					<ListItem> <Button>Зарегистрироваться</Button></ListItem>
-					<Divider sx={{m: 1}}/>
+					<Divider sx={{ m: 1 }} />
 					<ListItem><Button>В режим ГМ'а</Button></ListItem>
 					<ListItem><Button>Выбор персонажа</Button></ListItem>
 					<ListItem><Button>Экспорт в JSON</Button></ListItem>
-					<Divider sx={{m: 1}}/>
+					<Divider sx={{ m: 1 }} />
 					<ListItem><Button>Редактировать экраны</Button></ListItem>
 					<ListItem><Button>Выбор конфигурации</Button></ListItem>
 				</List>

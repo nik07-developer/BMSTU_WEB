@@ -3,15 +3,18 @@ import { FormEvent } from "react";
 
 function RegisterPage() {
     const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
     }
 
     return (
         <Stack component="form" onSubmit={onSubmit} spacing={3} sx={{ m: "auto", mt: "16vh", alignItems: "center" }}>
             <Typography component="h1" variant="h4">
-                Зарегистрироваться
+                Регистрация
             </Typography>
+            <TextField required type="email" name="email" label="Электронная почта" />
             <TextField required name="username" label="Имя пользователя" />
-            <TextField type="password" required name="password" label="Пароль" />
+            <TextField required type="password" name="password" label="Пароль" />
+            <TextField required type="password" name="password-confirm" label="Подтверждение пароля" />
             <Button type="submit" variant="contained">Зарегистрироваться</Button>
         </Stack>
     )
