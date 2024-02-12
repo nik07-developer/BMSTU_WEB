@@ -11,7 +11,6 @@ interface IApiContext {
 
 function axiosDefault(): AxiosInstance {
 	const result = Axios.create({ baseURL: baseUrl });
-	console.log(result.defaults);
 
 	result.interceptors.response.use(
 		responseSuccessHandler,

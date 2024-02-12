@@ -11,28 +11,78 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MenuIcon from '@mui/icons-material/Menu';
 import { List, ListItem, Typography, Button, Box, Divider } from "@mui/material";
 import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
-
+import WxHealth from "../components/widgets/WxHealth";
+import { CharacterData } from "../@types/Model";
+import WxArmor from "../components/widgets/WxArmor";
+import WxSkills from "../components/widgets/WxSkills";
+import WxLevel from "../components/widgets/WxLevel";
 
 interface PlayerScreenProps {
-	character?: Character
+	character?: Character,
+	setCharacter?: (character: Character) => void;
 }
 
-function PlayerScreen({ character }: PlayerScreenProps) {
+function PlayerScreen({ character, setCharacter }: PlayerScreenProps) {
 	const theme = useTheme();
 	const [fetchError, onLogout] = useUserLogout();
 	const [leftOpen, setLeftOpen] = useState(true);
 	const [rightOpen, setRightOpen] = useState(true);
 
-	const sample_widget: Widget = {
-		getHtml: WxAttributes,
-		name: "attributes-view"
-	};
-	const sample_screen_widget: ScreenWidget = {
-		widget: sample_widget,
-		posx: 100,
-		posy: 50
+	const updateCharacter = (data: CharacterData) => {
+		if (character && setCharacter) {
+			setCharacter({
+				name: character.name,
+				data: data,
+				screens: character.screens
+			})
+		}
+		else {
+			console.info("no way!!! this should never happen :'(");
+		}
 	}
-	const [widgets, setWidgets] = useState<ScreenWidget[]>([sample_screen_widget]);
+
+	const [widgets, setWidgets] = useState<ScreenWidget[]>([
+		{
+			widget: {
+				getHtml: WxAttributes,
+				name: "attributes-view"
+			},
+			posx: 300,
+			posy: 20
+		},
+		{
+			widget: {
+				getHtml: WxHealth,
+				name: "health-view"
+			},
+			posx: 300,
+			posy: 120
+		},
+		{
+			widget: {
+				getHtml: WxArmor,
+				name: "armor-view"
+			},
+			posx: 700,
+			posy: 10
+		},
+		{
+			widget: {
+				getHtml: WxSkills,
+				name: "armor-view"
+			},
+			posx: 500,
+			posy: 200
+		},
+		{
+			widget: {
+				getHtml: WxLevel,
+				name: "armor-view"
+			},
+			posx: 700,
+			posy: 100
+		}
+	]);
 
 	let newWidgets: ScreenWidget[] = [];
 
@@ -46,7 +96,7 @@ function PlayerScreen({ character }: PlayerScreenProps) {
 							w.posx = data.lastX;
 							w.posy = data.lastY;
 						}}>
-							{w.widget.getHtml(character.data, w.posx, w.posy)}
+							<Box sx={{position: "absolute", top: "0", left: "0"}}>{w.widget.getHtml(character.data, updateCharacter)}</Box>
 						</Draggable>)
 				}))}
 			</Box>
@@ -59,7 +109,7 @@ function PlayerScreen({ character }: PlayerScreenProps) {
 				</Box>
 				<List sx={{ "& Button": { variant: "text", p: 1, m: -1, minWidth: 1, justifyContent: "left" } }}>
 					<ListItem><Button>Войти</Button></ListItem>
-					<ListItem> <Button>Зарегистрироваться</Button></ListItem>
+					<ListItem><Button>Зарегистрироваться</Button></ListItem>
 					<Divider sx={{ m: 1 }} />
 					<ListItem><Button>В режим ГМ'а</Button></ListItem>
 					<ListItem><Button>Выбор персонажа</Button></ListItem>
