@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Repositories
 {
-	public class UserRepositoryPlaceholder : IUserRepository
+	public class UserRepositoryStub : IUserRepository
 	{
-		List<Guid> guids = new();
+		private List<Guid> guids = new();
 
 		public Guid Create(CreateUserDTO user)
 		{
@@ -28,9 +28,14 @@ namespace DataAccess.Repositories
 			return new UserDTO(id, "login", "passowrd", "name");
 		}
 
-		public void Update(Guid id, UpdateUserDTO user)
+		public void UpdateName(Guid id, string name)
 		{
 
 		}
-	}
+
+        public void UpdatePassword(Guid id, string password)
+        {
+
+        }
+    }
 }

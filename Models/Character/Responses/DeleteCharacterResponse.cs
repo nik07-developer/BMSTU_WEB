@@ -1,18 +1,17 @@
-﻿namespace Models.User.Responses
+﻿
+namespace Models.Character.Responses
 {
-    public class GetUserResponse
+    public class DeleteCharacterResponse
     {
         public const int OK = 0;
         public const int NOT_EXISTS = 1;
         public const int DB_ERROR = 2;
 
         public int Code;
-        public User? User;
 
-        public GetUserResponse()
+        public DeleteCharacterResponse()
         {
             Code = -1;
-            User = null;
         }
     }
 }

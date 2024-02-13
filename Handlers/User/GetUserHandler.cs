@@ -2,6 +2,7 @@
 using Models.User.Responses;
 using DataAccess.Interfaces;
 using DataAccess.DTO;
+using Models.User;
 
 namespace Handlers.User
 {
@@ -16,20 +17,21 @@ namespace Handlers.User
 
         public virtual GetUserResponse Handle(GetUserRequest request)
         {
-            GetUserResponse response;
+            var response = new GetUserResponse();
 
             try
             {
                 var dto = _repository.Get(request.ID);
-                response = new GetUserResponse(dto.ID, dto.Login, dto.Password, dto.Name);
+                response.User = new Models.User.User(dto.ID, dto.Login, dto.Password, dto.Name);
+                response.Code = GetUserResponse.OK;
             }
             catch (ArgumentException)
             {
-                response = new GetUserResponse(GetUserResponse.NOT_EXISTS);
+                response.Code = GetUserResponse.NOT_EXISTS;
             }
             catch
             {
-                response = new GetUserResponse(GetUserResponse.DB_ERROR);
+                response.Code = GetUserResponse.DB_ERROR;
             }
 
             return response;

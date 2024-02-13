@@ -1,6 +1,6 @@
-﻿namespace Web.DTO.User
+﻿namespace Web.DTO.Character
 {
-    public class UserChangeDTO
+    public class CharacterChangeDTO
     {
         public Dictionary<string, string> Changes { get; set; }
     }

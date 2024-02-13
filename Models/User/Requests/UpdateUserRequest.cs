@@ -3,15 +3,12 @@
     public class UpdateUserRequest
     {
         public Guid ID;
+        public Dictionary<string, string> Changes;
 
-        public string Password;
-        public string Name;
-
-        public UpdateUserRequest(Guid id, string password, string name)
+        public UpdateUserRequest(Guid id, Dictionary<string, string> changes)
         {
             ID = id;
-            Password = password;
-            Name = name;
+            Changes = changes;
         }
     }
 }
