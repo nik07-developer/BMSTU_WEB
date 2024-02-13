@@ -1,0 +1,139 @@
+{
+    "name": "Sample Character",
+    "max_health": 24,
+    "health": 10,
+    "level": 5,
+    "armor_class": 10,
+    "attributes": [
+        {
+            "name": "strength",
+            "value": 10
+        },
+        {
+            "name": "dexterity",
+            "value": 12
+        },
+        {
+            "name": "constitution",
+            "value": 8
+        },
+        {
+            "name": "intelligence",
+            "value": 13
+        },
+        {
+            "name": "wisdom",
+            "value": 17
+        },
+        {
+            "name": "charisma",
+            "value": 7
+        }
+    ],
+    "skills": [
+        {
+            "name": "acrobatics",
+            "proficiency": "U"
+        },
+        {
+            "name": "athletics",
+            "proficiency": "U"
+        },
+        {
+            "name": "perception",
+            "proficiency": "U"
+        },
+        {
+            "name": "survival",
+            "proficiency": "U"
+        },
+        {
+            "name": "animal_handling",
+            "proficiency": "U"
+        },
+        {
+            "name": "intimidation",
+            "proficiency": "U"
+        },
+        {
+            "name": "perfomance",
+            "proficiency": "U"
+        },
+        {
+            "name": "history",
+            "proficiency": "U"
+        },
+        {
+            "name": "sleight_of_hand",
+            "proficiency": "U"
+        },
+        {
+            "name": "magic",
+            "proficiency": "U"
+        },
+        {
+            "name": "medicine",
+            "proficiency": "U"
+        },
+        {
+            "name": "deception",
+            "proficiency": "U"
+        },
+        {
+            "name": "nature",
+            "proficiency": "U"
+        },
+        {
+            "name": "insight",
+            "proficiency": "U"
+        },
+        {
+            "name": "investigation",
+            "proficiency": "U"
+        },
+        {
+            "name": "religion",
+            "proficiency": "U"
+        },
+        {
+            "name": "stealth",
+            "proficiency": "U"
+        },
+        {
+            "name": "persuasion",
+            "proficiency": "U"
+        }
+    ],
+    "screens": [
+        {
+            "name": "Default",
+            "widgets": [
+                {
+                    "name": "attributes-view",
+                    "posx": 300,
+                    "posy": 20
+                },
+                {
+                    "name": "health-view",
+                    "posx": 300,
+                    "posy": 120
+                },
+                {
+                    "name": "armor-view",
+                    "posx": 700,
+                    "posy": 10
+                },
+                {
+                    "name": "skills-view",
+                    "posx": 500,
+                    "posy": 200
+                },
+                {
+                    "name": "level-view",
+                    "posx": 700,
+                    "posy": 100
+                }
+            ]
+        }
+    ]
+}

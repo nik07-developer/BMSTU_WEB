@@ -1,20 +1,5 @@
 import { ReactElement } from "react";
 
-export interface Widget {
-	getHtml: (data: CharacterData, setData: (data: CharacterData) => void) => ReactElement;
-	name: string;
-}
-
-export type ScreenWidget = {
-	widget: Widget;
-	posx: number;
-	posy: number;
-}
-
-export type CharacterScreen = {
-	widgets: ScreenWidget[];
-}
-
 export type CharacterAttribute = {
 	name: string,
 	value: number
@@ -31,19 +16,40 @@ export type Skill = {
 	proficiency: SkillProficiency;
 }
 
-export type CharacterData = {
+export type Character = {
+	name: string;
 	max_health: number;
 	health: number;
 	level: number;
 	armor_class: number;
 	attributes: CharacterAttribute[];
 	skills: Skill[];
+	screens: CharacterScreen[];
 }
 
-export type Character = {
+export function characterClone(c: Character) {
+	let cloned_screens: CharacterScreen[] = [];
+	c.screens.forEach(v => cloned_screens.push({name: v.name, widgets: [...v.widgets]}));
+
+	const result: Character =  {
+		...c,
+		attributes: [...c.attributes],
+		skills: [...c.skills],
+		screens: cloned_screens
+	};
+
+	return result;
+}
+
+export type ScreenWidget = {
 	name: string;
-	data: CharacterData;
-	screens: CharacterScreen[];
+	posx: number;
+	posy: number;
+}
+
+export type CharacterScreen = {
+	name: string,
+	widgets: ScreenWidget[];
 }
 
 export function attributeDisplayName(attribute: string) {
@@ -87,28 +93,3 @@ export function skillInfo(skill: string) {
 
 	return skills.get(skill) || ["Неизвестный навык", "unknown"];
 }
-
-/*
-{
-	id: 123,
-	name: "Leeroy Jenkins",
-	level: 10,
-	armor_class: 13,
-	max_health: 100,
-	health: 50,
-	attributes: [
-		{
-			name: "strength",
-			value: 10,
-			saving_throw: "U"  // ("T" or "E")
-		}
-		...
-	]
-	skills: [
-		{
-			name: "athletics",
-			proficiency: "U"  // ("T" or "E")
-		}
-	]
-}
-*/

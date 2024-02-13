@@ -1,8 +1,7 @@
 import { Box, Card, Paper, Typography, useTheme } from "@mui/material";
-import { attributeDisplayName, attributeModifier, CharacterData, Skill, skillInfo, SkillProficiency } from "../../@types/Model"
+import { attributeDisplayName, attributeModifier, Character, Skill, skillInfo, SkillProficiency } from "../../model/Model"
 
-function WxSkills(data: CharacterData) {
-
+function WxSkills(character: Character, setCharacter: (c: Character) => void) {
     const skillValue = (skill: Skill) => {
         let prof: number;
         switch (skill.proficiency) {
@@ -10,22 +9,22 @@ function WxSkills(data: CharacterData) {
                 prof = 0;
                 break;
             case SkillProficiency.Trained:
-                prof = Math.floor((data.level - 1) / 4) + 2;
+                prof = Math.floor((character.level - 1) / 4) + 2;
                 break;
             case SkillProficiency.Expert:
-                prof = 2 * (Math.floor((data.level - 1) / 4) + 2);
+                prof = 2 * (Math.floor((character.level - 1) / 4) + 2);
                 break;
         }
-        
+
         const skill_prof = skillInfo(skill.name)[1];
-        prof += attributeModifier((data.attributes.find((el) => el.name == skill_prof) || { name: "unknown", value: 0 }).value);
+        prof += attributeModifier((character.attributes.find((el) => el.name == skill_prof) || { name: "unknown", value: 0 }).value);
         return (prof > 0 ? "+" : "") + prof.toString();
     }
 
 	const theme = useTheme();
 	return (
 		<Paper elevation={0} sx={{ p: 0.25, display: "flex", flexDirection: "column"}}>
-			{data.skills.map((skill) => {
+			{character.skills.map((skill) => {
 				return (
 					<Card sx={{ m: 0.25, display: "flex", justifyContent: "space-between"}} elevation={2}>
                         <Box sx={{display: "flex"}}>
