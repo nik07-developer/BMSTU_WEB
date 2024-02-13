@@ -2,7 +2,7 @@ import { Box, Card, Paper, TextField, Typography, useTheme } from "@mui/material
 import Button from "@mui/material/Button";
 import { Character, characterClone } from "../../model/Model"
 
-function WxHealth(character: Character, setCharacter: (c: Character) => void) {
+function WxHealth(character: Character, setCharacter: (c: Character) => void, editMode: boolean) {
 	const theme = useTheme();
 
 	const updateHealth = (new_health: number) => {
@@ -22,10 +22,16 @@ function WxHealth(character: Character, setCharacter: (c: Character) => void) {
 	return (
 		<Paper elevation={0} sx={{ p: 0.25, width: "120px" }}>
 			<Card sx={{ m: 0.25 }} elevation={2}>
-				<Box sx={{ display: "flex" }}>
+				<Box sx={{ display: "flex", justifyContent: "center" }}>
 					<Typography textAlign="right" sx={{ width: "50px", pl: "5px" }}>{character.health}/</Typography>
-					<TextField id="hp-max" sx={{ width: "60px", pr: "5px" }} variant="standard" type="number"
-						defaultValue={character.max_health} onChange={updateMaxHealth} />
+					{editMode && (
+						<TextField sx={{ width: "50px", pr: "5px" }} variant="standard" type="number"
+							defaultValue={character.max_health} onChange={updateMaxHealth} />)}
+					{!editMode && (
+						<Typography textAlign="left" sx={{ width: "50px", pr: "5px" }}>
+							{character.max_health}
+						</Typography>
+					)}
 				</Box>
 				<Box sx={{ pt: "5px", bgcolor: theme.palette.action.disabledBackground, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
 					<Button
@@ -36,8 +42,6 @@ function WxHealth(character: Character, setCharacter: (c: Character) => void) {
 						sx={{ minWidth: "25px", maxWidth: "25px", maxHeight: "20px" }}
 						size="small" variant="contained" color="error"
 						onClick={() => { updateHealth(character.health - 1) }}>-</Button>
-
-					{/* <TextField variant="standard" type="number"></TextField> */}
 					<Button sx={{ minWidth: "25px", maxWidth: "25px", maxHeight: "20px" }}
 						size="small" variant="contained" color="success"
 						onClick={() => { updateHealth(character.health + 1) }}>+</Button>
@@ -49,7 +53,6 @@ function WxHealth(character: Character, setCharacter: (c: Character) => void) {
 					<Button sx={{ mt: "5px", minWidth: "75px", maxWidth: "75px", maxHeight: "20px" }}
 						size="small" variant="contained" color="warning"
 						onClick={() => { updateHealth(character.max_health) }}>сброс</Button>
-					{/* <TextField variant="standard" type="number"></TextField> */}
 				</Box>
 			</Card>
 		</Paper>

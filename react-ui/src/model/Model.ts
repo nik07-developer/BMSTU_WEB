@@ -29,9 +29,9 @@ export type Character = {
 
 export function characterClone(c: Character) {
 	let cloned_screens: CharacterScreen[] = [];
-	c.screens.forEach(v => cloned_screens.push({name: v.name, widgets: [...v.widgets]}));
+	c.screens.forEach(v => cloned_screens.push({ name: v.name, widgets: [...v.widgets] }));
 
-	const result: Character =  {
+	const result: Character = {
 		...c,
 		attributes: [...c.attributes],
 		skills: [...c.skills],
@@ -54,12 +54,12 @@ export type CharacterScreen = {
 
 export function attributeDisplayName(attribute: string) {
 	const attrs = new Map<string, [string, string]>([
-		["strength", [ "Сила", "сил" ]],
-		["dexterity", [ "Ловкость", "лов" ]],
-		["constitution", [ "Выносливость", "тел" ]],
-		["intelligence", [ "Интеллект", "инт" ]],
-		["wisdom", [ "Мудрость", "муд" ]],
-		["charisma", [ "Харизма", "хар"]]
+		["strength", ["Сила", "сил"]],
+		["dexterity", ["Ловкость", "лов"]],
+		["constitution", ["Выносливость", "тел"]],
+		["intelligence", ["Интеллект", "инт"]],
+		["wisdom", ["Мудрость", "муд"]],
+		["charisma", ["Харизма", "хар"]]
 	]);
 
 	return attrs.get(attribute) || ["Неизвестный атрибут", "???"];
@@ -71,24 +71,24 @@ export function attributeModifier(attribute: number) {
 
 export function skillInfo(skill: string) {
 	const skills = new Map<string, [string, string]>([
-		[ "acrobatics", [ "Акробатика", "dexterity" ]],
-		[ "athletics", [ "Атлетика", "strength" ]],
-		[ "perception", [ "Восприятие", "wisdom" ]],
-		[ "survival", [ "Выживание", "wisdom" ]],
-		[ "animal_handling", [ "Уход за животными", "wisdom" ]],
-		[ "intimidation", [ "Запугивание", "charisma" ]],
-		[ "perfomance", [ "Выступление", "charisma" ]],
-		[ "history", [ "История", "intelligence" ]],
-		[ "sleight_of_hand", [ "Ловкость рук", "dexterity" ]],
-		[ "magic", [ "Магия", "intelligence" ]],
-		[ "medicine", [ "Медицина", "wisdom" ]],
-		[ "deception", [ "Обман", "charisma" ]],
-		[ "nature", [ "Природа", "wisdom" ]],
-		[ "insight", [ "Проницательность", "wisdom" ]],
-		[ "investigation", [ "Расследование", "intelligence" ]],
-		[ "religion", [ "Религия", "intelligence" ]],
-		[ "stealth", [ "Скрытность", "dexterity" ]],
-		[ "persuasion", [ "Убеждение", "charisma" ]],
+		["acrobatics", ["Акробатика", "dexterity"]],
+		["athletics", ["Атлетика", "strength"]],
+		["perception", ["Восприятие", "wisdom"]],
+		["survival", ["Выживание", "wisdom"]],
+		["animal_handling", ["Уход за животными", "wisdom"]],
+		["intimidation", ["Запугивание", "charisma"]],
+		["perfomance", ["Выступление", "charisma"]],
+		["history", ["История", "intelligence"]],
+		["sleight_of_hand", ["Ловкость рук", "dexterity"]],
+		["magic", ["Магия", "intelligence"]],
+		["medicine", ["Медицина", "wisdom"]],
+		["deception", ["Обман", "charisma"]],
+		["nature", ["Природа", "wisdom"]],
+		["insight", ["Проницательность", "wisdom"]],
+		["investigation", ["Расследование", "intelligence"]],
+		["religion", ["Религия", "intelligence"]],
+		["stealth", ["Скрытность", "dexterity"]],
+		["persuasion", ["Убеждение", "charisma"]],
 	]);
 
 	return skills.get(skill) || ["Неизвестный навык", "unknown"];

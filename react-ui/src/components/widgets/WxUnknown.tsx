@@ -1,7 +1,7 @@
 import { Card, Paper, TextField, Typography, useTheme } from "@mui/material";
 import { attributeDisplayName, Character } from "../../model/Model"
 
-function WxArmor(character: Character, setCharacter: (c: Character) => void) {
+function WxUnknown(character: Character, setCharacter: (c: Character) => void, editMode: boolean) {
 	const theme = useTheme();
 	return (
 		<Paper elevation={0} sx={{ p: 0.25, width: "100px"}}>
@@ -14,4 +14,4 @@ function WxArmor(character: Character, setCharacter: (c: Character) => void) {
 	);
 }
 
-export default WxArmor;
+export default WxUnknown;

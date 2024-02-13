@@ -1,7 +1,7 @@
 import { Card, Paper, TextField, Typography, useTheme } from "@mui/material";
 import { Character, characterClone } from "../../model/Model"
 
-function WxArmor(character: Character, setCharacter: (c: Character) => void) {
+function WxArmor(character: Character, setCharacter: (c: Character) => void, editMode: boolean) {
     const theme = useTheme();
 
     const updateArmorClass = (e: any) => {
@@ -16,8 +16,13 @@ function WxArmor(character: Character, setCharacter: (c: Character) => void) {
                 <Typography sx={{ p: 0.5 }} textAlign="center">
                     КЗ
                 </Typography>
-                <TextField sx={{ p: 0.5 }} variant="standard" type="number"
-                    defaultValue={character.armor_class} onChange={updateArmorClass} />
+                {(editMode) && (
+                    <TextField sx={{ p: 0.5 }} variant="standard" type="number"
+                        defaultValue={character.armor_class} onChange={updateArmorClass} />)}
+                {(!editMode) && (
+                    <Typography sx={{ p: 0.5 }}>
+                        {character.armor_class}
+                    </Typography>)}
             </Card>
         </Paper>
     );

@@ -1,7 +1,7 @@
 import { Card, Paper, TextField, Typography, useTheme } from "@mui/material";
 import { attributeDisplayName, attributeModifier, Character, characterClone } from "../../model/Model"
 
-function WxAttributes(character: Character, setCharacter: (c: Character) => void) {
+function WxAttributes(character: Character, setCharacter: (c: Character) => void, editMode: boolean) {
 	const theme = useTheme();
 	const onAttrChange = (ev: any, attr_name: string) => {
 		let chr = characterClone(character);
@@ -18,8 +18,13 @@ function WxAttributes(character: Character, setCharacter: (c: Character) => void
 							{attributeDisplayName(attr.name)[1].toUpperCase()}
 						</Typography>
 						<Typography textAlign="center" sx={{ bgcolor: theme.palette.action.disabledBackground }}>
-							<TextField sx={{ p: 0.5 }} variant="standard" type="number"
-								defaultValue={attr.value} onChange={(e) => onAttrChange(e, attr.name)} />
+							{editMode && (
+								<TextField sx={{ p: 0.5 }} variant="standard" type="number"
+									defaultValue={attr.value} onChange={(e) => onAttrChange(e, attr.name)} />)}
+							{!editMode && (
+								<Typography>
+									{attr.value}
+								</Typography>)}
 						</Typography>
 						<Typography textAlign="center">
 							{(attributeModifier(attr.value) > 0 ? "+" : "") + attributeModifier(attr.value).toString()}
