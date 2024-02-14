@@ -1,4 +1,4 @@
-﻿namespace Models.Views
+﻿namespace Models.View
 {
     public class CharacterView
     {

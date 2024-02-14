@@ -1,7 +1,7 @@
 ﻿
-namespace Models.Views.Responses
+namespace Models.View.Responses
 {
-    public class DeleteViewResponse
+    public class UpdateViewResponse
     {
         public const int OK = 0;
         public const int NOT_EXISTS = 1;
@@ -9,7 +9,7 @@ namespace Models.Views.Responses
 
         public int Code;
 
-        public DeleteViewResponse()
+        public UpdateViewResponse()
         {
             Code = -1;
         }

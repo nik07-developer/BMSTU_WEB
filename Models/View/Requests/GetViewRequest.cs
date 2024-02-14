@@ -1,13 +1,13 @@
 ﻿
-namespace Models.Views.Requests
+namespace Models.View.Requests
 {
-    public class DeleteViewRequest
+    public class GetViewRequest
     {
         public Guid UserId;
         public Guid CharacterId;
         public string Name;
 
-        public DeleteViewRequest(Guid userId, Guid characterId, string name)
+        public GetViewRequest(Guid userId, Guid characterId, string name)
         {
             UserId = userId;
             CharacterId = characterId;

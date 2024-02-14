@@ -1,5 +1,5 @@
 ﻿
-namespace Models.Views.Responses
+namespace Models.View.Responses
 {
     public class CreateViewResponse
     {

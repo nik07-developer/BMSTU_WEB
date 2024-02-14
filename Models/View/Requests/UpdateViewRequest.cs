@@ -1,5 +1,5 @@
 ﻿
-namespace Models.Views.Requests
+namespace Models.View.Requests
 {
     public class UpdateViewRequest
     {
