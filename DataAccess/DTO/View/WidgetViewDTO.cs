@@ -1,6 +1,6 @@
 ﻿using Models.View;
 
-namespace DataAccess.DTO.View
+namespace DataAccess.DTO
 {
     public class WidgetViewDTO : WidgetView
     {

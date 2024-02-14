@@ -1,4 +1,4 @@
-﻿using DataAccess.DTO.View;
+﻿using DataAccess.DTO;
 
 namespace DataAccess.Interfaces
 {

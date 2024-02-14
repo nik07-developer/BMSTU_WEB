@@ -1,5 +1,4 @@
-﻿using Models;
-using Models.Character.Requests;
+﻿using Models.Character.Requests;
 using Models.Character.Responses;
 
 using DataAccess.Interfaces;
