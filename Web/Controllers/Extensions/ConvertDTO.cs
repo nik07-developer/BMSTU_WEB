@@ -1,4 +1,5 @@
-﻿using Web.DTO.Character;
+﻿using Amazon.Runtime.Internal.Transform;
+using Web.DTO.Character;
 using Web.DTO.User;
 using Web.DTO.ViewConfig;
 
@@ -18,9 +19,78 @@ namespace Web.Controllers.Extensions
             return result;
         }
 
-        public static CharacterDTO Convert(Models.Character.Character ch)
+        public static CharacterDTO Convert(Models.Character.Character c)
         {
-            return new CharacterDTO(ch.ID, ch.Name, ch.Data);
+            return new CharacterDTO(c.ID, c.Name, c.MaxHealth, c.Health, c.Level, c.ArmorClass, 
+                Convert(c.Attributes), Convert(c.Skills));
+        }
+        
+        public static AttributeDTO Convert(Models.Character.CharacterAttribute a)
+        {
+            return new AttributeDTO(a.Value, a.Proficiency);
+        }
+
+        public static Models.Character.CharacterAttribute Convert(AttributeDTO a)
+        {
+            return new Models.Character.CharacterAttribute(a.Value, a.Proficiency);
+        }
+
+        public static SkillDTO Convert(Models.Character.CharacterSkill s)
+        {
+            return new SkillDTO(s.Proficiency);
+        }
+
+        public static Models.Character.CharacterSkill Convert(SkillDTO s)
+        {
+            return new Models.Character.CharacterSkill(s.Proficiency);
+        }
+
+        public static Dictionary<string, AttributeDTO> Convert(Dictionary<string, Models.Character.CharacterAttribute> dict)
+        {
+            var result = new Dictionary<string, AttributeDTO>();
+
+            foreach (var pair in dict)
+            {
+                result.Add(pair.Key, Convert(pair.Value));
+            }
+
+            return result;
+        }
+
+        public static Dictionary<string, Models.Character.CharacterAttribute> Convert(Dictionary<string, AttributeDTO> dict)
+        {
+            var result = new Dictionary<string, Models.Character.CharacterAttribute>();
+
+            foreach (var pair in dict)
+            {
+                result.Add(pair.Key, Convert(pair.Value));
+            }
+
+            return result;
+        }
+
+        public static Dictionary<string, Models.Character.CharacterSkill> Convert(Dictionary<string, SkillDTO> dict)
+        {
+            var result = new Dictionary<string, Models.Character.CharacterSkill>();
+
+            foreach (var pair in dict)
+            {
+                result.Add(pair.Key, Convert(pair.Value));
+            }
+
+            return result;
+        }
+
+        public static Dictionary<string, SkillDTO> Convert(Dictionary<string, Models.Character.CharacterSkill> dict)
+        {
+            var result = new Dictionary<string, SkillDTO>();
+
+            foreach (var pair in dict)
+            {
+                result.Add(pair.Key, Convert(pair.Value));
+            }
+
+            return result;
         }
 
         public static UserDTO Convert(Models.User.User user)

@@ -1,13 +1,8 @@
 ﻿
 namespace Models.Character.Requests
 {
-    public class GetCharactersRequest
+    public class GetCharactersRequest(Guid userId)
     {
-        public Guid UserId;
-
-        public GetCharactersRequest(Guid userId)
-        {
-            UserId = userId;
-        }
+        public Guid UserId = userId;
     }
 }

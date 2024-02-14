@@ -13,7 +13,7 @@ namespace Models.Character.Responses
         public GetCharactersResponse()
         {
             Code = -1;
-            Characters = new();
+            Characters = [];
         }
     }
 }

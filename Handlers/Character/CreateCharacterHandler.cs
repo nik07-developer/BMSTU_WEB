@@ -17,7 +17,14 @@ namespace Handlers.Character
 
         public virtual CreateCharacterResponse Handle(CreateCharacterRequest request)
         {
-            var dto = new CreateCharacterDTO(request.Name, request.Data);
+            var dto = new CreateCharacterDTO(request.Name,
+                                             request.MaxHealth,
+                                             request.Health,
+                                             request.Level,
+                                             request.ArmorClass,
+                                             request.Attributes,
+                                             request.Skills);
+
             var response = new CreateCharacterResponse();
 
             try
