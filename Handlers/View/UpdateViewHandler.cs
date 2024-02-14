@@ -21,7 +21,7 @@ namespace Handlers.View
 
             try
             {
-                var dto = WidgetViewConverter.Model2DataAccess(request.NewWidgets);
+                var dto = request.NewWidgets.Model2DataAccess();
                 _repository.Update(request.UserId, request.CharacterId, request.Name, dto);
                 
                 response.Code = UpdateViewResponse.OK;
