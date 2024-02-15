@@ -1,0 +1,650 @@
+openapi: 3.0.3
+info:
+  title: Swagger Petstore - OpenAPI 3.0
+  version: 1.0.0
+  description: |-
+    Komarov Nikita & Cheprasov Kirill Web project.
+    Interactive character sheet for DnD.
+
+
+servers: 
+  - url: https://localhost:5001
+
+paths:
+  /login:
+    post:
+      tags:
+        - auth
+      summary: Авторизоваться
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Credentials'
+      responses:
+        '200':
+          description: Авторизация прошла успешно
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  auth_token:
+                    type: string
+        '400':
+          $ref: '#/responses/schemas/InvalidRequest'
+        '403':
+          $ref: '#/responses/schemas/Forbidden'
+        '503':
+          $ref: '#/responses/schemas/ServiceUnavailable'
+  
+  /refresh:
+    post:
+      tags:
+        - auth
+      security: 
+        - basicAuth: []
+      summary: Продлить сеанс
+      responses:
+        '200':
+          description: Сеанс успешно продлён
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  auth_token:
+                    type: string
+        '400':
+          $ref: '#/responses/schemas/InvalidRequest'
+        '401':
+          $ref: '#/responses/schemas/Unautorized'
+        '503':
+          $ref: '#/responses/schemas/ServiceUnavailable'
+          
+  /characters:
+    post:
+      tags:
+        - characters
+      security: 
+        - basicAuth: []
+      summary: Загрузить нового персонажа на сервер
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CharacterCreationDTO'
+      responses:
+        '200':
+          description: Персонаж загружен на сервер
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  character_id:
+                    type: integer
+        '400':
+          $ref: '#/responses/schemas/InvalidRequest'
+        '401':
+          $ref: '#/responses/schemas/Unautorized'
+        '503':
+          $ref: '#/responses/schemas/ServiceUnavailable'
+    get:
+      tags:
+        - characters
+      security: 
+        - basicAuth: []
+      summary: Получить персонажей
+      responses:
+        '200':
+          description: Персонажи получены
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Character'
+        '400':
+          $ref: '#/responses/schemas/InvalidRequest'
+        '401':
+          $ref: '#/responses/schemas/Unautorized'
+        '404':
+          $ref: '#/responses/schemas/NotFound'
+        '503':
+          $ref: '#/responses/schemas/ServiceUnavailable'
+      
+      
+  /characters/{character_id}:
+    get:
+      tags:
+        - characters
+      security: 
+        - baererAuth: []
+      summary: Получить персонажа
+      parameters:
+        - in: path
+          name: character_id
+          schema:
+            type: integer
+          required: true
+          description: ID персонажа
+      responses:
+        '200':
+          description: Персонаж получен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Character'
+        '400':
+          $ref: '#/responses/schemas/InvalidRequest'
+        '401':
+          $ref: '#/responses/schemas/Unautorized'
+        '404':
+          $ref: '#/responses/schemas/NotFound'
+        '503':
+          $ref: '#/responses/schemas/ServiceUnavailable'    
+    patch:
+      tags:
+        - characters
+      security: 
+        - basicAuth: []
+      summary: Изменить персонажа на сервере
+      parameters:
+        - in: path
+          name: character_id
+          schema:
+            type: integer
+          required: true
+          description: ID персонажа
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CharacterCreationDTO'
+      responses:
+        '200':
+          description: Персонаж изменён
+        '400':
+          $ref: '#/responses/schemas/InvalidRequest'
+        '401':
+          $ref: '#/responses/schemas/Unautorized'
+        '404':
+          $ref: '#/responses/schemas/NotFound'
+        '503':
+          $ref: '#/responses/schemas/ServiceUnavailable'
+    delete:
+      tags:
+        - characters
+      security: 
+        - basicAuth: []
+      summary: Удалить персонажа на сервере
+      parameters:
+        - in: path
+          name: character_id
+          schema:
+            type: integer
+          required: true
+          description: ID персонажа
+      responses:
+        '200':
+          description: Персонаж удалён
+        '400':
+          $ref: '#/responses/schemas/InvalidRequest'
+        '401':
+          $ref: '#/responses/schemas/Unautorized'
+        '404':
+          $ref: '#/responses/schemas/NotFound'
+        '503':
+          $ref: '#/responses/schemas/ServiceUnavailable'
+          
+  /characters/{character_id}/view-configs:
+    post:
+      tags:
+        - character_views
+      security: 
+        - basicAuth: []
+      summary: Создать настройки отображения персонажа на сервере
+      parameters:
+        - in: path
+          name: character_id
+          schema:
+            type: integer
+          required: true
+          description: ID персонажа
+        - in: query
+          name: platform
+          schema:
+            type: string
+          description: Платформа
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CharacterViewConfig'
+      responses:
+        '200':
+          description: Настройки отображения персонажа загружены на сервер
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  character_id:
+                    type: integer
+        '400':
+          $ref: '#/responses/schemas/InvalidRequest'
+        '401':
+          $ref: '#/responses/schemas/Unautorized'
+        '503':
+          $ref: '#/responses/schemas/ServiceUnavailable'
+    get:
+      tags:
+        - character_views
+      security: 
+        - basicAuth: []
+      summary: Получить настройки отображения персонажа
+      parameters:
+        - in: path
+          name: character_id
+          schema:
+            type: integer
+          required: true
+          description: ID персонажа
+        - in: query
+          name: platform
+          schema:
+            type: string
+          description: Платформа
+          required: true
+      responses:
+        '200':
+          description: Настройки отображения персонажа получены
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CharacterViewConfig'
+        '400':
+          $ref: '#/responses/schemas/InvalidRequest'
+        '401':
+          $ref: '#/responses/schemas/Unautorized'
+        '404':
+          $ref: '#/responses/schemas/NotFound'
+        '503':
+          $ref: '#/responses/schemas/ServiceUnavailable'    
+    put:
+      tags:
+        - character_views
+      security: 
+        - basicAuth: []
+      summary: Изменить настройки отображения персонажа
+      parameters:
+        - in: path
+          name: character_id
+          schema:
+            type: integer
+          required: true
+          description: ID персонажа
+        - in: query
+          name: platform
+          schema:
+            type: string
+          description: Платформа
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CharacterViewConfig'
+      responses:
+        '200':
+          description: Настройки отображения персонажа изменены
+        '400':
+          $ref: '#/responses/schemas/InvalidRequest'
+        '401':
+          $ref: '#/responses/schemas/Unautorized'
+        '404':
+          $ref: '#/responses/schemas/NotFound'
+        '503':
+          $ref: '#/responses/schemas/ServiceUnavailable'
+    delete:
+      tags:
+        - character_views
+      security: 
+        - basicAuth: []
+      summary: Удалить настройки отображения персонажа
+      parameters:
+        - in: path
+          name: character_id
+          schema:
+            type: integer
+          required: true
+          description: ID персонажа
+        - in: query
+          name: platform
+          schema:
+            type: string
+          description: Платформа
+          required: true
+      responses:
+        '200':
+          description: Настройки отображения персонажа удалены
+        '400':
+          $ref: '#/responses/schemas/InvalidRequest'
+        '401':
+          $ref: '#/responses/schemas/Unautorized'
+        '404':
+          $ref: '#/responses/schemas/NotFound'
+        '503':
+          $ref: '#/responses/schemas/ServiceUnavailable'
+          
+  /users:
+    post:
+      tags:
+        - users
+      summary: Зарегестрировать пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserCreationDTO'
+      responses:
+        '200':
+          description: Пользователь зарегестрирован
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_id:
+                    type: integer
+        '400':
+          $ref: '#/responses/schemas/InvalidRequest'
+        '401':
+          $ref: '#/responses/schemas/Unautorized'
+        '503':
+          $ref: '#/responses/schemas/ServiceUnavailable'
+    get:
+      tags:
+        - users
+      security: 
+        - basicAuth: []
+      summary: Получить данные пользователя
+      parameters:
+        - in: path
+          name: user_id
+          schema:
+            type: integer
+          required: true
+          description: ID пользователя
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: Данные пользователя изменены
+        '400':
+          $ref: '#/responses/schemas/InvalidRequest'
+        '401':
+          $ref: '#/responses/schemas/Unautorized'
+        '503':
+          $ref: '#/responses/schemas/ServiceUnavailable'
+          
+    patch:
+      tags:
+        - users
+      security: 
+        - basicAuth: []
+      summary: Изменить данные пользователя
+      parameters:
+        - in: path
+          name: user_id
+          schema:
+            type: integer
+          required: true
+          description: ID пользователя
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserChangeDTO'
+      responses:
+        '200':
+          description: Данные пользователя изменены
+        '400':
+          $ref: '#/responses/schemas/InvalidRequest'
+        '401':
+          $ref: '#/responses/schemas/Unautorized'
+        '503':
+          $ref: '#/responses/schemas/ServiceUnavailable'
+          
+    delete:
+      tags:
+        - users
+      security: 
+        - basicAuth: []
+      summary: Удалить пользователя
+      parameters:
+        - in: path
+          name: user_id
+          schema:
+            type: integer
+          required: true
+          description: ID пользователя
+      responses:
+        '200':
+          description: Пользователь удалён
+        '400':
+          $ref: '#/responses/schemas/InvalidRequest'
+        '401':
+          $ref: '#/responses/schemas/Unautorized'
+        '404':
+          $ref: '#/responses/schemas/NotFound'
+        '503':
+          $ref: '#/responses/schemas/ServiceUnavailable'
+
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    Character:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Frodo Goblings
+        max_health:
+          type: integer
+          example: 13
+        health:
+          type: integer
+          example: 13
+        level:
+          type: integer
+          example: 1
+        armor_class:
+          type: integer
+          example: 11
+        attributes:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Attribute'
+        skills:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Skill'
+    
+    Attribute:
+      type: object
+      properties:
+        value:
+          type: string
+          example: 15
+        proficiensy: 
+          type: string
+          example: "T"
+    
+    Skill:
+      type: object
+      properties:
+        proficiensy: 
+          type: string
+          example: "E"
+          
+    
+    CharacterCreationDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Frodo Goblings
+        max_health:
+          type: integer
+          example: 13
+        health:
+          type: integer
+          example: 13
+        level:
+          type: integer
+          example: 1
+        armor_class:
+          type: integer
+          example: 11
+        attributes:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Attribute'
+        skills:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Skill'
+            
+    CharacterChangeDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: Frodo Goblings
+        max_health:
+          type: integer
+          example: 13
+        health:
+          type: integer
+          example: 13
+        level:
+          type: integer
+          example: 1
+        armor_class:
+          type: integer
+          example: 11
+        attributes:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Attribute'
+        skills:
+          type: object
+          additionalProperties:
+            $ref: '#/components/schemas/Skill'
+            
+    CharacterViewConfig:
+      type: array
+      items: 
+        $ref: '#/components/schemas/WidgetViewConfig'
+          
+    WidgetViewConfig:
+      type: object
+      properties:
+        name: 
+          type: string
+          example: default-platform
+        posx:
+          type: integer
+          example: 128
+        posy:
+          type: integer
+          example: 256
+        
+    
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        login:
+          type: string
+          example: nik07
+        password:
+          type: string
+          example: qwerty
+        name:
+          type: string
+          example: Nikita
+    UserCreationDTO:
+      type: object
+      properties:
+        login:
+          type: string
+          example: nik07
+        password:
+          type: string
+          example: qwerty
+        name:
+          type: string
+          example: Nikita
+    UserChangeDTO:
+      type: object
+      properties:
+        password:
+          type: string
+          example: qwerty
+        name:
+          type: string
+          example: Nikita
+    Credentials:
+      properties:
+        login:
+          type: string
+          example: "login"
+        password:
+          type: string
+          example: "password"
+          
+          
+responses:
+  schemas:
+    InvalidRequest:
+      description: Невалидный запрос
+      
+    NotFound:
+      description: Объект не найден
+      
+    Unautorized:
+      description: Не авторизованный запрос
+      
+    Forbidden:
+      description: Ограничение прав доступа
+      
+    ServiceUnavailable:
+      description: Сервис не работает, попробуйте позже
+      
+      
+      
+      
