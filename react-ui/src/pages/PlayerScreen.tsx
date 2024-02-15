@@ -34,7 +34,7 @@ const PlayerScreenContent = memo(function PlayerScreenContent({ character, setCh
 			<IconButton sx={{ m: 2 }} onClick={() => { setLeftOpen(true); }}><MenuIcon /></IconButton>
 			{character && (character.screens[activeScreen].widgets.map((wx: ScreenWidget, wxIndex: number) => {
 				return (
-					<Draggable defaultPosition={{ x: wx.posx, y: wx.posy }} disabled={!editMode}
+					<Draggable defaultPosition={{ x: wx.posx, y: wx.posy }} position={{ x: wx.posx, y: wx.posy }} disabled={!editMode}
 						onStop={(e: DraggableEvent, data: DraggableData) => {
 							let chr = characterClone(character);
 							chr.screens[activeScreen].widgets[wxIndex].posx = data.lastX;
