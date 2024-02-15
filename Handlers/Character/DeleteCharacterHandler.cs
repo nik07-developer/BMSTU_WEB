@@ -23,7 +23,7 @@ namespace Handlers.Character
                 _repository.Delete(request.UserId, request.CharacterId);
                 response.Code = DeleteCharacterResponse.OK;
             }
-            catch (ArgumentException)
+            catch (ArgumentOutOfRangeException)
             {
                 response.Code = DeleteCharacterResponse.NOT_EXISTS;
             }

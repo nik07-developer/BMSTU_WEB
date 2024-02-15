@@ -32,7 +32,7 @@ namespace Handlers.User
 
                 response.Code = UpdateUserResponse.OK;
             }
-            catch (ArgumentException)
+            catch (ArgumentOutOfRangeException)
             {
                 response.Code = UpdateUserResponse.NOT_EXISTS;
             }

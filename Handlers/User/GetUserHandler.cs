@@ -25,7 +25,7 @@ namespace Handlers.User
                 response.User = new Models.User.User(dto.ID, dto.Login, dto.Password, dto.Name);
                 response.Code = GetUserResponse.OK;
             }
-            catch (ArgumentException)
+            catch (ArgumentOutOfRangeException)
             {
                 response.Code = GetUserResponse.NOT_EXISTS;
             }

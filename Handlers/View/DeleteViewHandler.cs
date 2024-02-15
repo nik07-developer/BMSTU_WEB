@@ -23,7 +23,7 @@ namespace Handlers.View
                 _repository.Delete(request.UserId, request.CharacterId, request.Name);
                 response.Code = DeleteViewResponse.OK;
             }
-            catch (ArgumentException)
+            catch (ArgumentOutOfRangeException)
             {
                 response.Code = DeleteViewResponse.NOT_EXISTS;
             }
