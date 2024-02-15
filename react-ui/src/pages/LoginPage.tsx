@@ -19,8 +19,7 @@ function LoginPage() {
 	}
 
 	if (getUserError.state == FetchState.SUCCESS) {
-		prevRoute.key == "default" ?
-			navigate("/") : navigate(-1);
+		navigate("/player-screen");
 	}
 
 	return (

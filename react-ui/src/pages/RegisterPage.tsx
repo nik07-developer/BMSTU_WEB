@@ -1,10 +1,12 @@
 import { Alert, AlertTitle, Button, Stack, TextField, Typography } from "@mui/material";
 import { FormEvent, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { FetchState, useUserRegister } from "../api/ApiHooks";
 
 function RegisterPage() {
     const [fetchError, register] = useUserRegister();
     const [error, setError] = useState("")
+    const navigate = useNavigate();
     const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setError("");
@@ -16,7 +18,8 @@ function RegisterPage() {
         if (password != password_confirm)
             setError("Пароли должны совпадать");
         else {
-            register(username, password, email);
+            await register(username, password, email);
+            navigate("/login");
         }
     }
 

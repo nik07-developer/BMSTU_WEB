@@ -1,12 +1,13 @@
 import { createContext, useEffect, useState } from "react"
 import Axios, { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig, isAxiosError } from "axios";
 
-const baseUrl = 'https://localhost:5000'
+const baseUrl = 'http://localhost:5000'
 
 interface IApiContext {
 	axiosInstance: AxiosInstance,
 	authorised: boolean,
-	setAuthorised: (a: boolean) => void
+	setAuthorised: (a: boolean) => void,
+	getUsername: () => string | null,
 }
 
 function axiosDefault(): AxiosInstance {
@@ -61,10 +62,15 @@ function isAuthorised(): boolean {
 	return localStorage.getItem("token") != null;
 }
 
+function getUsername() {
+	return localStorage.getItem("username");
+}
+
 export const ApiContext = createContext<IApiContext>({
 	axiosInstance: Axios.create({ baseURL: baseUrl }),
 	authorised: false,
-	setAuthorised: () => { }
+	setAuthorised: () => {},
+	getUsername: getUsername,
 });
 
 function ApiProvider({ children }: any) {
@@ -72,7 +78,7 @@ function ApiProvider({ children }: any) {
 	const [authorised, setAuthorised] = useState(isAuthorised());
 
 	return (
-		<ApiContext.Provider value={{ axiosInstance, authorised, setAuthorised }}>
+		<ApiContext.Provider value={{ axiosInstance, authorised, setAuthorised, getUsername }}>
 			{children}
 		</ApiContext.Provider>);
 }

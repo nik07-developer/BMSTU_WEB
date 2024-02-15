@@ -27,6 +27,7 @@ export function useUserLogin() {
 			// TODO: check response
 			const token = response.data.auth_token as string;
 			localStorage.setItem("token", token);
+			localStorage.setItem("username", login);
 			ctx.setAuthorised(true);
 			setFetchError({ state: FetchState.SUCCESS });
 		}

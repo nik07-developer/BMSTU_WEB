@@ -12,6 +12,7 @@ import Draggable, { DraggableData, DraggableEvent } from "react-draggable";
 import { htmlByWxName } from "../components/widgets/Widgets";
 import { useNavigate } from "react-router-dom";
 import { Close, Delete } from "@mui/icons-material";
+import { ApiContext } from "../context/ApiProvider";
 
 interface PlayerScreenProps {
 	character: Character;
@@ -53,6 +54,7 @@ const PlayerScreenContent = memo(function PlayerScreenContent({ character, setCh
 function PlayerScreen({ character, setCharacter }: PlayerScreenProps) {
 	const navigate = useNavigate();
 	const theme = useTheme();
+	const authCtx = useContext(ApiContext);
 	const [fetchError, onLogout] = useUserLogout();
 	const [leftOpen, setLeftOpen] = useState(true);
 	const [rightOpen, setRightOpen] = useState(true);
@@ -119,10 +121,14 @@ function PlayerScreen({ character, setCharacter }: PlayerScreenProps) {
 					</IconButton>
 				</Box>
 				<List sx={{ "& Button": { variant: "text", p: 1, m: -1, minWidth: 1, justifyContent: "left" } }}>
-					<ListItem><Button onClick={() => { navigate("/login"); }}>
-						Войти</Button></ListItem>
-					<ListItem><Button onClick={() => { navigate("/register"); }}>
-						Зарегистрироваться</Button></ListItem>
+					{!authCtx.authorised && (<ListItem><Button onClick={() => { navigate("/login"); }}>
+							Войти</Button></ListItem>)}
+					{!authCtx.authorised && (<ListItem><Button onClick={() => { navigate("/register"); }}>
+							Зарегистрироваться</Button></ListItem>)}
+					{authCtx.authorised && (<ListItem><Typography>
+							{authCtx.getUsername()}</Typography></ListItem>)}
+					{authCtx.authorised && (<ListItem><Button onClick={onLogout}>
+							Выйти</Button></ListItem>)}
 					<Divider sx={{ m: 1 }} />
 					<ListItem><Button disabled={true}>
 						В режим ГМ'а</Button></ListItem>
