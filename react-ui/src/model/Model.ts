@@ -45,6 +45,7 @@ export type CharacterAttributes = {
 }
 
 export type Character = {
+	id?: string;
 	name: string;
 	max_health: number;
 	health: number;

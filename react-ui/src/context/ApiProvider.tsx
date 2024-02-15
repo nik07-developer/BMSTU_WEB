@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react"
-import Axios, { AxiosInstance, AxiosResponse, InternalAxiosRequestConfig, isAxiosError } from "axios";
+import Axios, { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig, isAxiosError } from "axios";
 
 const baseUrl = 'https://localhost:5000'
 
@@ -29,8 +29,13 @@ function responseSuccessHandler(response: AxiosResponse<any, any>) {
 }
 
 function responseErrorHandler(error: any) {
-	if (isAxiosError(error) && error.code == "ERR_NETWORK") {
-		return Promise.resolve(error);
+	if (isAxiosError(error)) {
+		if (error.code == AxiosError.ERR_NETWORK) {
+			return Promise.resolve(error);
+		}
+		else if (error.response?.status == 401) {
+			localStorage.removeItem("token");
+		}
 	}
 	return Promise.reject(error);
 }

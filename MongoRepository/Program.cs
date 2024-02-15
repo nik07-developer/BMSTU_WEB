@@ -1,5 +1,6 @@
 
-using MongoRepository;
+/*
+ * using MongoRepository;
 using MongoDB.Driver;
 using MongoDB.Bson;
 using Models.Character;
@@ -11,7 +12,7 @@ var db = client.GetDatabase("web");
 db.CreateCollection("users");
 db.CreateCollection("characters");
 db.CreateCollection("views");
-
+*/
 /*
 var users = db.GetCollection<UserDB>("users");
 var doc = new UserDB()
