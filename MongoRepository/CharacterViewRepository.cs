@@ -20,17 +20,21 @@ namespace MongoRepository
 
         public CharacterViewRepository()
         {
-            _client = new MongoClient("mongodb://localhost:8081");
-            _db = _client.GetDatabase("web");
-            _users = _db.GetCollection<UserDB>("users");
-            _characters = _db.GetCollection<CharacterDB>("characters");
-            _views = _db.GetCollection<CharacterViewDB>("views");
+            _client = new MongoClient(MongoConfig.DB_ADDRESS);
+            _db = _client.GetDatabase(MongoConfig.DB_NAME);
+            _users = _db.GetCollection<UserDB>(MongoConfig.USERS_COLLECTION);
+            _characters = _db.GetCollection<CharacterDB>(MongoConfig.CHARACTERS_COLLECTION);
+            _views = _db.GetCollection<CharacterViewDB>(MongoConfig.VIEWS_COLLECTION);
         }
 
         public void Create(Guid userId, Guid characterId, CreateCharacterViewDTO view)
         {
+            var session = _client.StartSession();
+            session.StartTransaction();
+
             if (_characters.Find(filter: x => x.ID == characterId && x.UserID == userId) == null)
             {
+                session.AbortTransaction();
                 throw new ArgumentOutOfRangeException();
             }
 
@@ -52,12 +56,17 @@ namespace MongoRepository
             }
 
             _views.InsertOne(doc);
+            session.CommitTransaction();
         }
 
         public void Delete(Guid userId, Guid characterId, string name)
         {
+            var session = _client.StartSession();
+            session.StartTransaction();
+
             if (_characters.Find(filter: x => x.ID == characterId && x.UserID == userId) == null)
             {
+                session.AbortTransaction();
                 throw new ArgumentOutOfRangeException();
             }
 
@@ -65,14 +74,21 @@ namespace MongoRepository
 
             if (res.DeletedCount == 0)
             {
+                session.AbortTransaction();
                 throw new ArgumentOutOfRangeException();
             }
+
+            session.CommitTransaction();
         }
 
         public CharacterViewDTO Get(Guid userId, Guid characterId, string name)
         {
+            var session = _client.StartSession();
+            session.StartTransaction();
+
             if (_characters.Find(filter: x => x.ID == characterId && x.UserID == userId) == null)
             {
+                session.AbortTransaction();
                 throw new ArgumentOutOfRangeException();
             }
 
@@ -80,6 +96,7 @@ namespace MongoRepository
 
             if (view == null)
             {
+                session.AbortTransaction();
                 throw new ArgumentOutOfRangeException();
             }
 
@@ -90,13 +107,19 @@ namespace MongoRepository
                 dto.WidgetViews.Add(new(wv.Name, wv.PosX, wv.PosY));
             }
 
+            session.CommitTransaction();
+
             return dto;
         }
 
         public void Update(Guid userId, Guid characterId, string name, List<WidgetViewDTO> newWidgetViews)
         {
+            var session = _client.StartSession();
+            session.StartTransaction();
+
             if (_characters.Find(filter: x => x.ID == characterId && x.UserID == userId) == null)
             {
+                session.AbortTransaction();
                 throw new ArgumentOutOfRangeException();
             }
 
@@ -114,8 +137,11 @@ namespace MongoRepository
 
             if (res == null)
             {
+                session.AbortTransaction();
                 throw new ArgumentOutOfRangeException();
             }
+
+            session.CommitTransaction();
         }
     }
 }

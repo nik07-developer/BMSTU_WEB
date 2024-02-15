@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using DataAccess.DTO;
+using DataAccess.DTO.User;
 using Models;
 
 namespace DataAccess.Interfaces
@@ -13,8 +14,7 @@ namespace DataAccess.Interfaces
     {
         public Guid Create(CreateUserDTO user);
         public UserDTO Get(Guid id);
-        public void UpdateName(Guid id, string name);
-        public void UpdatePassword(Guid id, string password);
+        public void Update(Guid id, UpdateUserDTO update);
         public void Delete(Guid id);
 
         public UserDTO Find(string login, string password);

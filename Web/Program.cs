@@ -40,15 +40,11 @@ builder.Services.AddSingleton<UpdateViewHandler>();
 builder.Services.AddSingleton<DeleteViewHandler>();
 builder.Services.AddSingleton<GetViewHandler>();
 
-// Add services to the container.
 
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Нужно для взаимодействия на разных доменах.
-// В нашем случае localhost:3000 и localhost:5000
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(allowAllPolicy, policy =>
@@ -79,7 +75,6 @@ app.UseCors(allowAllPolicy);
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -95,7 +90,7 @@ public class AuthOptions
     public const string ID_CLAIM_TYPE = "id";
     public const string ISSUER = "MyAuthServer";
     public const string AUDIENCE = "MyAuthClient";
-    const string KEY = "mysupersecret_secretkey!123";  // я стырил
+    const string KEY = "mysupersecret_secretkey!123";
     public static SymmetricSecurityKey GetSymmetricSecurityKey() =>
         new SymmetricSecurityKey(Encoding.UTF8.GetBytes(KEY));
 }

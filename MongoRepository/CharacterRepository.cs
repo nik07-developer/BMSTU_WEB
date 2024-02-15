@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 using MongoDB.Driver;
 using MongoDB.Bson.Serialization.Attributes;
+using DataAccess.DTO.Character;
 
 namespace MongoRepository
 {
@@ -22,17 +23,21 @@ namespace MongoRepository
 
         public CharacterRepository()
         {
-            _client = new MongoClient("mongodb://localhost:8081");
-            _db = _client.GetDatabase("web");
-            _users = _db.GetCollection<UserDB>("users");
-            _characters = _db.GetCollection<CharacterDB>("characters");
-            _views = _db.GetCollection<CharacterViewDB>("views");
+            _client = new MongoClient(MongoConfig.DB_ADDRESS);
+            _db = _client.GetDatabase(MongoConfig.DB_NAME);
+            _users = _db.GetCollection<UserDB>(MongoConfig.USERS_COLLECTION);
+            _characters = _db.GetCollection<CharacterDB>(MongoConfig.CHARACTERS_COLLECTION);
+            _views = _db.GetCollection<CharacterViewDB>(MongoConfig.VIEWS_COLLECTION);
         }
 
         public Guid Create(Guid userId, CreateCharacterDTO character)
         {
+            var session = _client.StartSession();
+            session.StartTransaction();
+
             if (_users.Find(filter: x => x.ID == userId) == null)
             {
+                session.AbortTransaction();
                 throw new ArgumentOutOfRangeException();
             }
 
@@ -68,18 +73,26 @@ namespace MongoRepository
             }
 
             _characters.InsertOne(doc);
+            session.CommitTransaction();
+
             return doc.ID;
         }
 
         public void Delete(Guid userId, Guid characterId)
         {
+            var session = _client.StartSession();
+            session.StartTransaction();
+
             _views.DeleteMany(x => x.CharacterID == characterId);
 
             var res = _characters.DeleteOne(x => x.UserID == userId && x.ID == characterId);
             if (res.DeletedCount == 0)
             {
+                session.AbortTransaction();
                 throw new ArgumentOutOfRangeException();
             }
+
+            session.CommitTransaction();
         }
 
         public CharacterDTO Get(Guid userId, Guid characterId)
@@ -106,107 +119,69 @@ namespace MongoRepository
             return result;
         }
 
-        public void UpdateArmorClass(Guid userId, Guid characterId, int newArmorClass)
+        public void Update(Guid userId, Guid characterId, UpdateCharacterDTO updateDTO)
         {
+            var session = _client.StartSession();
+            session.StartTransaction();
+
             var update = Builders<CharacterDB>.Update.Set(ch => ch.ID, characterId);
-            update.Set(ch => ch.ArmorClass, newArmorClass);
+
+            if (updateDTO.Name != null)
+            {
+                update.Set(ch => ch.Name, updateDTO.Name);
+            }
+
+            if (updateDTO.MaxHealth != null)
+            {
+                update.Set(ch => ch.MaxHealth, updateDTO.MaxHealth);
+            }
+
+            if (updateDTO.Health != null) 
+            {
+                update.Set(ch => ch.Health, updateDTO.Health);
+            }
+
+            if (updateDTO.Level != null)
+            {
+                update.Set(ch => ch.Level, updateDTO.Level);
+            }
+
+            if (updateDTO.ArmorClass != null)
+            {
+                update.Set(ch => ch.ArmorClass, updateDTO.ArmorClass);
+            }
+
+            if (updateDTO.Attributes != null)
+            {
+                var attributes = new List<CharacterAttributeDB>();
+                foreach (var pair in updateDTO.Attributes)
+                {
+                    attributes.Add(new() { Name = pair.Key, Value = pair.Value.Value, Proficiency = pair.Value.Proficiency });
+                }
+
+                update.Set(ch => ch.Attributes, attributes);
+            }
+
+            if (updateDTO.Skills != null)
+            {
+                var skills = new List<CharacterSkillDB>();
+                foreach (var pair in updateDTO.Skills)
+                {
+                    skills.Add(new() { Name = pair.Key, Proficiency = pair.Value.Proficiency });
+                }
+
+                update.Set(ch => ch.Skills, skills);
+            }
 
             var res = _characters.FindOneAndUpdate(filter: ch => ch.UserID == userId && ch.ID == characterId, update: update);
 
             if (res == null)
             {
+                session.AbortTransaction();
                 throw new ArgumentOutOfRangeException();
             }
-        }
 
-        public void UpdateAttributes(Guid userId, Guid characterId, Dictionary<string, CharacterAttribute> newAttributes)
-        {
-            var attributes = new List<CharacterAttributeDB>();
-            foreach (var pair in newAttributes)
-            {
-                attributes.Add(new() { Name = pair.Key, Value = pair.Value.Value, Proficiency = pair.Value.Proficiency });
-            }
-
-            var update = Builders<CharacterDB>.Update.Set(ch => ch.ID, characterId);
-            update.Set(ch => ch.Attributes, attributes);
-
-            var res = _characters.FindOneAndUpdate(filter: ch => ch.UserID == userId && ch.ID == characterId, update: update);
-
-            if (res == null)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        public void UpdateHealth(Guid userId, Guid characterId, int newHealth)
-        {
-            var update = Builders<CharacterDB>.Update.Set(ch => ch.ID, characterId);
-            update.Set(ch => ch.Health, newHealth);
-
-            var res = _characters.FindOneAndUpdate(filter: ch => ch.UserID == userId && ch.ID == characterId, update: update);
-
-            if (res == null)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        public void UpdateLevel(Guid userId, Guid characterId, int newLevel)
-        {
-            var update = Builders<CharacterDB>.Update.Set(ch => ch.ID, characterId);
-            update.Set(ch => ch.Level, newLevel);
-
-            var res = _characters.FindOneAndUpdate(filter: ch => ch.UserID == userId && ch.ID == characterId, update: update);
-
-            if (res == null)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        public void UpdateMaxHealth(Guid userId, Guid characterId, int newMaxHealth)
-        {
-            var update = Builders<CharacterDB>.Update.Set(ch => ch.ID, characterId);
-            update.Set(ch => ch.MaxHealth, newMaxHealth);
-
-            var res = _characters.FindOneAndUpdate(filter: ch => ch.UserID == userId && ch.ID == characterId, update: update);
-
-            if (res == null)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        public void UpdateName(Guid userId, Guid characterId, string newName)
-        {
-            var update = Builders<CharacterDB>.Update.Set(ch => ch.ID, characterId);
-            update.Set(ch => ch.Name, newName);
-
-            var res = _characters.FindOneAndUpdate(filter: ch => ch.UserID == userId && ch.ID == characterId, update: update);
-
-            if (res == null)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
-        }
-
-        public void UpdateSkills(Guid userId, Guid characterId, Dictionary<string, CharacterSkill> newSkills)
-        {
-            var skills = new List<CharacterSkillDB>();
-            foreach (var pair in newSkills)
-            {
-                skills.Add(new() { Name = pair.Key, Proficiency = pair.Value.Proficiency });
-            }
-
-            var update = Builders<CharacterDB>.Update.Set(ch => ch.ID, characterId);
-            update.Set(ch => ch.Skills, skills);
-
-            var res = _characters.FindOneAndUpdate(filter: ch => ch.UserID == userId && ch.ID == characterId, update: update);
-
-            if (res == null)
-            {
-                throw new ArgumentOutOfRangeException();
-            }
+            session.CommitTransaction();
         }
 
         private static CharacterDTO Convert(CharacterDB ch)
