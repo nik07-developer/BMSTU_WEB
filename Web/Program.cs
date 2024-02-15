@@ -1,5 +1,6 @@
 using Handlers.User;
 using Handlers.Character;
+using Handlers.View;
 
 using MongoRepository;
 
@@ -20,18 +21,24 @@ const string allowAllPolicy = "_allow_all";
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton<IUserRepository, UserRepositoryStub>();
+builder.Services.AddSingleton<IUserRepository, UserRepository>();
 builder.Services.AddSingleton<CreateUserHandler>();
 builder.Services.AddSingleton<UpdateUserHandler>();
 builder.Services.AddSingleton<DeleteUserHandler>();
 builder.Services.AddSingleton<GetUserHandler>();
 
-builder.Services.AddSingleton<ICharacterRepository, CharacterRepositoryStub>();
+builder.Services.AddSingleton<ICharacterRepository, CharacterRepository>();
 builder.Services.AddSingleton<CreateCharacterHandler>();
 builder.Services.AddSingleton<UpdateCharacterHandler>();
 builder.Services.AddSingleton<DeleteCharacterHandler>();
 builder.Services.AddSingleton<GetCharactersHandler>();
 builder.Services.AddSingleton<GetCharacterHandler>();
+
+builder.Services.AddSingleton<ICharacterViewRepository, CharacterViewRepository>();
+builder.Services.AddSingleton<CreateViewHandler>();
+builder.Services.AddSingleton<UpdateViewHandler>();
+builder.Services.AddSingleton<DeleteViewHandler>();
+builder.Services.AddSingleton<GetViewHandler>();
 
 // Add services to the container.
 

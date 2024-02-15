@@ -1,9 +1,7 @@
-﻿using Models.Character;
-using Models.Character.Requests;
+﻿using Models.Character.Requests;
 using Models.Character.Responses;
 
 using DataAccess.Interfaces;
-using DataAccess.DTO;
 
 namespace Handlers.Character
 {
@@ -22,6 +20,7 @@ namespace Handlers.Character
 
             try
             {
+                Console.WriteLine("Try");
                 var list = _repository.GetAll(request.UserId);
                 var characters = new List<Models.Character.Character>();
 
@@ -31,7 +30,7 @@ namespace Handlers.Character
                 response.Characters = characters;
                 response.Code = GetCharactersResponse.OK;
             }
-            catch (ArgumentException)
+            catch (ArgumentOutOfRangeException)
             {
                 response.Code = GetCharactersResponse.NOT_EXISTS;
             }

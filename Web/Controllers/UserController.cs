@@ -50,14 +50,13 @@ namespace Web.Controllers
             };
         }
 
-        [HttpGet("/users/{user_id}")]
+        [HttpGet("/users")]
         [Authorize]
-        public ActionResult<UserDTO> Get(Guid user_id)
+        public ActionResult<UserDTO> Get()
         {
-            if (this.GetUID() != user_id)
-                return Forbid();
+            var userId = this.GetUID();
 
-            var rq = new GetUserRequest(user_id);
+            var rq = new GetUserRequest(userId);
             var res = _getHandler.Handle(rq);
 
             return res.Code switch
@@ -69,15 +68,13 @@ namespace Web.Controllers
             };
         }
 
-        [HttpPatch("/users/{user_id}")]
+        [HttpPatch("/users")]
         [Authorize]
-        public IActionResult Patch(Guid user_id,
-                                   [FromBody] Dictionary<string, string> userChanges)
+        public IActionResult Patch([FromBody] Dictionary<string, string> userChanges)
         {
-            if (this.GetUID() != user_id)
-                return Forbid();
+            var userId = this.GetUID();
 
-            var rq = new UpdateUserRequest(user_id, userChanges);
+            var rq = new UpdateUserRequest(userId, userChanges);
             var res = _updateHandler.Handle(rq);
 
             return res.Code switch
@@ -89,14 +86,13 @@ namespace Web.Controllers
             };
         }
 
-        [HttpDelete("/users/{user_id}")]
+        [HttpDelete("/users")]
         [Authorize]
-        public IActionResult Delete(Guid user_id)
+        public IActionResult Delete()
         {
-            if (this.GetUID() != user_id)
-                return Forbid();
+            var userId = this.GetUID();
 
-            var rq = new DeleteUserRequest(user_id);
+            var rq = new DeleteUserRequest(userId);
             var res = _deleteHandler.Handle(rq);
 
             return res.Code switch

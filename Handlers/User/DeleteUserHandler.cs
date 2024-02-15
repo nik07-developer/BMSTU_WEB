@@ -23,7 +23,7 @@ namespace Handlers.User
                 _repository.Delete(request.ID);
                 response.Code = DeleteUserResponse.OK;
             }
-            catch (FileNotFoundException)
+            catch (ArgumentOutOfRangeException)
             {
                 response.Code = DeleteUserResponse.NOT_EXISTS;
             }

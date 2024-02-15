@@ -22,7 +22,7 @@ namespace Web.Controllers
                     issuer: AuthOptions.ISSUER,
                     audience: AuthOptions.AUDIENCE,
                     claims: claims,
-                    expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(2)),  // да всё, не рендерятся твои комменты. Используй нормальную кодировку
+                    expires: DateTime.UtcNow.Add(TimeSpan.FromMinutes(60)),  // да всё, не рендерятся твои комменты. Используй нормальную кодировку
                     signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
 
             var token = new JwtSecurityTokenHandler().WriteToken(jwt);

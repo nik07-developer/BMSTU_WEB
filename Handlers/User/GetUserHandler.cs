@@ -21,11 +21,21 @@ namespace Handlers.User
 
             try
             {
-                var dto = _repository.Get(request.ID);
-                response.User = new Models.User.User(dto.ID, dto.Login, dto.Password, dto.Name);
-                response.Code = GetUserResponse.OK;
+                if (request.ID != Guid.Empty)
+                {
+                    var dto = _repository.Get(request.ID);
+                    response.User = new Models.User.User(dto.ID, dto.Login, dto.Password, dto.Name);
+                    response.Code = GetUserResponse.OK;
+                }
+                else
+                {
+                    var dto = _repository.Find(request.Login, request.Password);
+                    response.User = new Models.User.User(dto.ID, dto.Login, dto.Password, dto.Name);
+                    response.Code = GetUserResponse.OK;
+                }
+                
             }
-            catch (ArgumentException)
+            catch (ArgumentOutOfRangeException)
             {
                 response.Code = GetUserResponse.NOT_EXISTS;
             }

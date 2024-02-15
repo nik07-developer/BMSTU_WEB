@@ -41,7 +41,15 @@ namespace Web.Controllers
         [Authorize]
         public ActionResult<Guid> Post([FromBody] CharacterCreationDTO character)
         {
-            var rq = new CreateCharacterRequest(this.GetUID(), character.Name, character.Data);
+            var rq = new CreateCharacterRequest(this.GetUID(),
+                                                character.Name,
+                                                character.MaxHealth,
+                                                character.Health,
+                                                character.Level,
+                                                character.ArmorClass,
+                                                ConvertDTO.Convert(character.Attributes),
+                                                ConvertDTO.Convert(character.Skills));
+
             var res = _createHandler.Handle(rq);
 
             return res.Code switch
@@ -104,9 +112,19 @@ namespace Web.Controllers
         [HttpPatch("/characters/{character_id}")]
         [Authorize]
         public IActionResult Patch(Guid character_id, 
-                                   [FromBody] Dictionary<string, string> characterChanges)
+                                   [FromBody] CharacterChangeDTO changes)
         {
-            var rq = new UpdateCharacterRequest(this.GetUID(), character_id, characterChanges);
+
+            var rq = new UpdateCharacterRequest(this.GetUID(),
+                                                character_id,
+                                                changes.Name,
+                                                changes.MaxHealth,
+                                                changes.Health,
+                                                changes.Level,
+                                                changes.ArmorClass,
+                                                (changes.Attributes == null) ? null : ConvertDTO.Convert(changes.Attributes),
+                                                (changes.Skills == null) ? null : ConvertDTO.Convert(changes.Skills));
+                                                               
             var res = _updateHandler.Handle(rq);
 
             return res.Code switch

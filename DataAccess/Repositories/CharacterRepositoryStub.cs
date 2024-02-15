@@ -15,7 +15,7 @@ namespace DataAccess.Repositories
 
         public Guid Create(Guid userId, CreateCharacterDTO character)
         {
-            guids.Append(Guid.NewGuid());
+            guids.Add(Guid.NewGuid());
             return guids.Last();
         }
 
@@ -26,22 +26,47 @@ namespace DataAccess.Repositories
 
         public CharacterDTO Get(Guid userId, Guid characterId)
         {
-            return new CharacterDTO(characterId, "Frodo Goblings", "Rogue 4 lvl");
+            throw new NotImplementedException();
         }
 
         public List<CharacterDTO> GetAll(Guid userId)
         {
-            return new() { new CharacterDTO(guids.Last(), "Frodo Goblings", "Rogue 4 lvl") };
+            throw new NotImplementedException();
         }
 
-        public void UpdateData(Guid userId, Guid characterId, string newData)
+        public void UpdateArmorClass(Guid userId, Guid characterId, int newArmorClass)
         {
-            
+            throw new NotImplementedException();
+        }
+
+        public void UpdateAttributes(Guid userId, Guid characterId, Dictionary<string, CharacterAttribute> attributes)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateHealth(Guid userId, Guid characterId, int newHealth)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateLevel(Guid userId, Guid characterId, int newLevel)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateMaxHealth(Guid userId, Guid characterId, int newMaxHealth)
+        {
+            throw new NotImplementedException();
         }
 
         public void UpdateName(Guid userId, Guid characterId, string newName)
         {
-            
+            throw new NotImplementedException();
+        }
+
+        public void UpdateSkills(Guid userId, Guid characterId, Dictionary<string, CharacterSkill> skills)
+        {
+            throw new NotImplementedException();
         }
     }
 }
