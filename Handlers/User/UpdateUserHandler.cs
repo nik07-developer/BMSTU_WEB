@@ -20,14 +20,14 @@ namespace Handlers.User
 
             try
             {
-                if (request.Changes.TryGetValue("name", out var newName))
+                if (request.Name != null)
                 {
-                    _repository.UpdateName(request.ID, newName);
+                    _repository.UpdateName(request.ID, request.Name);
                 }
 
-                if (request.Changes.TryGetValue("password", out var newPassword))
+                if (request.Password != null)
                 {
-                    _repository.UpdatePassword(request.ID, newPassword);
+                    _repository.UpdateName(request.ID, request.Password);
                 }
 
                 response.Code = UpdateUserResponse.OK;

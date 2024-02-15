@@ -77,7 +77,7 @@ var app = builder.Build();
 
 app.UseCors(allowAllPolicy);
 app.UseAuthentication();
-app.UseAuthorization();  // ... уже была в строке 46?
+app.UseAuthorization();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -87,7 +87,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-//app.UseAuthorization();  // ... уже была в строке 66?
 app.MapControllers();
 app.Run();
 

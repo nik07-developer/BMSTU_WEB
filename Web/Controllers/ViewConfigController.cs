@@ -53,14 +53,14 @@ namespace Web.Controllers
 
         [HttpGet()]
         [Authorize]
-        public ActionResult<ViewConfigDTO> Get(Guid character_id, [FromQuery] string platform)
+        public ActionResult<List<ViewConfigDTO>> Get(Guid character_id, [FromQuery] string platform)
         {
             var rq = new GetViewRequest(this.GetUID(), character_id, platform);
             var res = _getHandler.Handle(rq);
 
             return res.Code switch
             {
-                GetViewResponse.OK => Ok(ConvertDTO.Convert(res.CharacterView)),
+                GetViewResponse.OK => Ok(new List<ViewConfigDTO>() { ConvertDTO.Convert(res.CharacterView) }),
                 GetViewResponse.NOT_EXISTS => NotFound(),
                 GetViewResponse.DB_ERROR => StatusCode(503),
                 _ => BadRequest()

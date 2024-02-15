@@ -26,7 +26,7 @@ namespace Handlers.User
                 response.ID = _repository.Create(dto);
                 response.Code = CreateUserResponse.OK;
             }
-            catch(ArgumentException)
+            catch(ArgumentOutOfRangeException)
             {
                 response.Code = CreateUserResponse.ALREADY_EXISTS;
             }

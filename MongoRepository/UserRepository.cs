@@ -27,6 +27,13 @@ namespace MongoRepository
 
         public Guid Create(CreateUserDTO user)
         {
+            var uu = _users.Find(filter: x => x.Login == user.Login);
+
+            if (uu != null)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
             var doc = new UserDB()
             {
                 Login = user.Login,
