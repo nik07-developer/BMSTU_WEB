@@ -4,106 +4,82 @@
     "health": 10,
     "level": 5,
     "armor_class": 10,
-    "attributes": [
-        {
-            "name": "strength",
+    "attributes": {
+        "strength": {
             "value": 10
         },
-        {
-            "name": "dexterity",
+        "dexterity": {
             "value": 12
         },
-        {
-            "name": "constitution",
+        "constitution": {
             "value": 8
         },
-        {
-            "name": "intelligence",
+        "intelligence": {
             "value": 13
         },
-        {
-            "name": "wisdom",
+        "wisdom": {
             "value": 17
         },
-        {
-            "name": "charisma",
+        "charisma": {
             "value": 7
         }
-    ],
-    "skills": [
-        {
-            "name": "acrobatics",
+    },
+    "skills": {
+        "acrobatics": {
             "proficiency": "U"
         },
-        {
-            "name": "athletics",
+        "athletics": {
             "proficiency": "U"
         },
-        {
-            "name": "perception",
+        "perception": {
             "proficiency": "U"
         },
-        {
-            "name": "survival",
+        "survival": {
             "proficiency": "U"
         },
-        {
-            "name": "animal_handling",
+        "animal_handling": {
             "proficiency": "U"
         },
-        {
-            "name": "intimidation",
+        "intimidation": {
             "proficiency": "U"
         },
-        {
-            "name": "perfomance",
+        "perfomance": {
             "proficiency": "U"
         },
-        {
-            "name": "history",
+        "history": {
             "proficiency": "U"
         },
-        {
-            "name": "sleight_of_hand",
+        "sleight_of_hand": {
             "proficiency": "U"
         },
-        {
-            "name": "magic",
+        "magic": {
             "proficiency": "U"
         },
-        {
-            "name": "medicine",
+        "medicine": {
             "proficiency": "U"
         },
-        {
-            "name": "deception",
+        "deception": {
             "proficiency": "U"
         },
-        {
-            "name": "nature",
+        "nature": {
             "proficiency": "U"
         },
-        {
-            "name": "insight",
+        "insight": {
             "proficiency": "U"
         },
-        {
-            "name": "investigation",
+        "investigation": {
             "proficiency": "U"
         },
-        {
-            "name": "religion",
+        "religion": {
             "proficiency": "U"
         },
-        {
-            "name": "stealth",
+        "stealth": {
             "proficiency": "U"
         },
-        {
-            "name": "persuasion",
+        "persuasion": {
             "proficiency": "U"
         }
-    ],
+    },
     "screens": [
         {
             "name": "Default",

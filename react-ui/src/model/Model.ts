@@ -1,8 +1,7 @@
 import { ReactElement } from "react";
 
 export type CharacterAttribute = {
-	name: string,
-	value: number
+	value: number;
 }
 
 export enum SkillProficiency {
@@ -12,8 +11,37 @@ export enum SkillProficiency {
 }
 
 export type Skill = {
-	name: string;
 	proficiency: SkillProficiency;
+}
+
+export type Skills = {
+	acrobatics: Skill;
+	athletics: Skill;
+	perception: Skill;
+	survival: Skill;
+	animal_handling: Skill;
+	intimidation: Skill;
+	perfomance: Skill;
+	history: Skill;
+	sleight_of_hand: Skill;
+	magic: Skill;
+	medicine: Skill;
+	deception: Skill;
+	nature: Skill;
+	insight: Skill;
+	investigation: Skill;
+	religion: Skill;
+	stealth: Skill;
+	persuasion: Skill;
+}
+
+export type CharacterAttributes = {
+	strength: CharacterAttribute;
+	dexterity: CharacterAttribute;
+	constitution: CharacterAttribute;
+	intelligence: CharacterAttribute;
+	wisdom: CharacterAttribute;
+	charisma: CharacterAttribute;
 }
 
 export type Character = {
@@ -22,8 +50,8 @@ export type Character = {
 	health: number;
 	level: number;
 	armor_class: number;
-	attributes: CharacterAttribute[];
-	skills: Skill[];
+	attributes: CharacterAttributes;
+	skills: Skills;
 	screens: CharacterScreen[];
 }
 
@@ -33,8 +61,8 @@ export function characterClone(c: Character) {
 
 	const result: Character = {
 		...c,
-		attributes: [...c.attributes],
-		skills: [...c.skills],
+		attributes: {...c.attributes},
+		skills: {...c.skills},
 		screens: cloned_screens
 	};
 
