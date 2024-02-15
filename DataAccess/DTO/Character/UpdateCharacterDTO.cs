@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace DataAccess.DTO.Character
 {
-    public class UpdateCharacterDTO(string? name,
-                            int? maxHealth,
-                            int? health,
-                            int? level,
-                            int? armorClass,
-                            Dictionary<string, CharacterAttribute>? attributes,
-                            Dictionary<string, CharacterSkill>? skills)
+    public class UpdateCharacterDTO(string? name = null,
+                            int? maxHealth = null,
+                            int? health = null,
+                            int? level = null,
+                            int? armorClass = null,
+                            Dictionary<string, CharacterAttribute>? attributes = null,
+                            Dictionary<string, CharacterSkill>? skills = null)
     {
         public string? Name { get; set; } = name;
         public int? MaxHealth { get; set; } = maxHealth;

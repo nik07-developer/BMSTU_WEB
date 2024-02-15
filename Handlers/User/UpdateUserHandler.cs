@@ -2,6 +2,7 @@
 using Models.User.Responses;
 using DataAccess.Interfaces;
 using DataAccess.DTO;
+using DataAccess.DTO.User;
 
 namespace Handlers.User
 {
@@ -20,16 +21,8 @@ namespace Handlers.User
 
             try
             {
-                if (request.Name != null)
-                {
-                    _repository.UpdateName(request.ID, request.Name);
-                }
-
-                if (request.Password != null)
-                {
-                    _repository.UpdateName(request.ID, request.Password);
-                }
-
+                var changes = new UpdateUserDTO(request.Password, request.Name);
+                _repository.Update(request.ID, changes);
                 response.Code = UpdateUserResponse.OK;
             }
             catch (ArgumentOutOfRangeException)
