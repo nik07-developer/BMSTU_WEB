@@ -55,6 +55,17 @@ namespace MongoRepository
             }
         }
 
+        public UserDTO Find(string login, string password)
+        {
+            var user = _users.Find(filter: x => x.Login == login && x.Password == password).First();
+            if (user == null)
+            {
+                throw new ArgumentOutOfRangeException();
+            }
+
+            return new UserDTO(user.ID, user.Login, user.Password, user.Name);
+        }
+
         public UserDTO Get(Guid userId)
         {
             var user = _users.Find(filter: x => x.ID == userId).First();

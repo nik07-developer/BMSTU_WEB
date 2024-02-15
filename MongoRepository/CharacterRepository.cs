@@ -95,7 +95,7 @@ namespace MongoRepository
 
         public List<CharacterDTO> GetAll(Guid userId)
         {
-            var characters = _characters.Find(filter: x => x.ID == userId).ToList();
+            var characters = _characters.Find(filter: x => x.UserID == userId).ToList();
             var result = new List<CharacterDTO>();
 
             foreach (var ch in characters)

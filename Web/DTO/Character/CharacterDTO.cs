@@ -20,14 +20,14 @@
 
     }
 
-    public class AttributeDTO(int value, char proficiency)
+    public class AttributeDTO(int value, string proficiency)
     {
         public int Value { get; set; } = value;
-        public char Proficiency { get; set; } = proficiency;
+        public string Proficiency { get; set; } = proficiency;
     }
 
-    public class SkillDTO(char proficiency)
+    public class SkillDTO(string proficiency)
     {
-        public char Proficiency { get; set; } = proficiency;
+        public string Proficiency { get; set; } = proficiency;
     }
 }

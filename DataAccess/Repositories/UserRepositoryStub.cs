@@ -23,7 +23,12 @@ namespace DataAccess.Repositories
 			guids.Remove(id);
 		}
 
-		public UserDTO Get(Guid id)
+        public UserDTO Find(string login, string password)
+        {
+            throw new NotImplementedException();
+        }
+
+        public UserDTO Get(Guid id)
 		{
 			return new UserDTO(id, "login", "passowrd", "name");
 		}

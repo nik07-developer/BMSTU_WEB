@@ -37,13 +37,13 @@ namespace MongoRepository
     {
         public string Name { get; set; }
         public int Value { get; set; }
-        public char Proficiency { get; set; }
+        public string Proficiency { get; set; }
     }
 
     public class CharacterSkillDB
     {
         public string Name { get; set; }
-        public char Proficiency { get; set; }
+        public string Proficiency { get; set; }
     }
 
     public class CharacterViewDB

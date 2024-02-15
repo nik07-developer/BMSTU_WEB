@@ -16,5 +16,7 @@ namespace DataAccess.Interfaces
         public void UpdateName(Guid id, string name);
         public void UpdatePassword(Guid id, string password);
         public void Delete(Guid id);
+
+        public UserDTO Find(string login, string password);
     }
 }

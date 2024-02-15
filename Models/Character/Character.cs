@@ -20,14 +20,14 @@ namespace Models.Character
         public Dictionary<string, CharacterSkill> Skills { get; set; } = skills;
     }
 
-    public class CharacterAttribute(int value, char proficiency)
+    public class CharacterAttribute(int value, string proficiency)
     {
         public int Value { get; set; } = value;
-        public char Proficiency { get; set; } = proficiency;
+        public string Proficiency { get; set; } = proficiency;
     }
 
-    public class CharacterSkill(char proficiency)
+    public class CharacterSkill(string proficiency)
     {
-        public char Proficiency { get; set; } = proficiency;
+        public string Proficiency { get; set; } = proficiency;
     }
 }
