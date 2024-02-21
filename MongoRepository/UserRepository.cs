@@ -6,6 +6,7 @@ using MongoDB.Bson.Serialization.Attributes;
 using Models.User;
 using Models.Character;
 using DataAccess.DTO.User;
+using MongoDB.Bson;
 
 namespace MongoRepository
 {
@@ -99,30 +100,20 @@ namespace MongoRepository
 
         public void Update(Guid userId, UpdateUserDTO updateDTO)
         {
-            var session = _client.StartSession();
-            session.StartTransaction();
-
             var update = Builders<UserDB>.Update.Set(user => user.ID, userId);
-
-            if (updateDTO.Name != null)
-            {
-                update.Set(user => user.Name, updateDTO.Name);
-            }
 
             if (updateDTO.Password != null)
             {
-                update.Set(user => user.Password, updateDTO.Password);
+                update = update.Set(user => user.Password, updateDTO.Password);
             }
 
-            var res = _users.FindOneAndUpdate(filter: user => user.ID == userId, update: update);
-
-            if (res == null)
+            if (updateDTO.Name != null)
             {
-                session.AbortTransaction();
-                throw new ArgumentOutOfRangeException();
+                update = update.Set(user => user.Name, updateDTO.Name);
             }
 
-            session.CommitTransaction();
+            var res = _users.UpdateOne(filter: user => user.ID == userId, update: update) 
+                ?? throw new ArgumentOutOfRangeException();
         }
     }
 }

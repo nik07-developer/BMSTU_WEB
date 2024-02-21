@@ -97,13 +97,20 @@ namespace MongoRepository
 
         public CharacterDTO Get(Guid userId, Guid characterId)
         {
-            var ch = _characters.Find(filter: x => x.ID == userId).First();
-            if (ch == null)
+            Console.WriteLine("Repo Get Called");
+            var ch = _characters.Find(filter: x => x.UserID == userId && x.ID == characterId ).ToList();
+
+            Console.WriteLine("Find Called");
+            Console.WriteLine($"{ch.First().ID}  -- {ch.First().UserID}");
+
+            if (ch.Count() == 0)
             {
+                Console.WriteLine("null");
                 throw new ArgumentOutOfRangeException();
             }
 
-            return Convert(ch);
+            Console.WriteLine("NotNull");
+            return Convert(ch.First());
         }
 
         public List<CharacterDTO> GetAll(Guid userId)
@@ -121,34 +128,31 @@ namespace MongoRepository
 
         public void Update(Guid userId, Guid characterId, UpdateCharacterDTO updateDTO)
         {
-            var session = _client.StartSession();
-            session.StartTransaction();
-
             var update = Builders<CharacterDB>.Update.Set(ch => ch.ID, characterId);
 
             if (updateDTO.Name != null)
             {
-                update.Set(ch => ch.Name, updateDTO.Name);
+                update = update.Set(ch => ch.Name, updateDTO.Name);
             }
 
             if (updateDTO.MaxHealth != null)
             {
-                update.Set(ch => ch.MaxHealth, updateDTO.MaxHealth);
+                update = update.Set(ch => ch.MaxHealth, updateDTO.MaxHealth);
             }
 
             if (updateDTO.Health != null) 
             {
-                update.Set(ch => ch.Health, updateDTO.Health);
+                update = update.Set(ch => ch.Health, updateDTO.Health);
             }
 
             if (updateDTO.Level != null)
             {
-                update.Set(ch => ch.Level, updateDTO.Level);
+                update = update.Set(ch => ch.Level, updateDTO.Level);
             }
 
             if (updateDTO.ArmorClass != null)
             {
-                update.Set(ch => ch.ArmorClass, updateDTO.ArmorClass);
+               update = update.Set(ch => ch.ArmorClass, updateDTO.ArmorClass);
             }
 
             if (updateDTO.Attributes != null)
@@ -159,7 +163,7 @@ namespace MongoRepository
                     attributes.Add(new() { Name = pair.Key, Value = pair.Value.Value, Proficiency = pair.Value.Proficiency });
                 }
 
-                update.Set(ch => ch.Attributes, attributes);
+                update = update.Set(ch => ch.Attributes, attributes);
             }
 
             if (updateDTO.Skills != null)
@@ -170,23 +174,16 @@ namespace MongoRepository
                     skills.Add(new() { Name = pair.Key, Proficiency = pair.Value.Proficiency });
                 }
 
-                update.Set(ch => ch.Skills, skills);
+                update = update.Set(ch => ch.Skills, skills);
             }
 
-            var res = _characters.FindOneAndUpdate(filter: ch => ch.UserID == userId && ch.ID == characterId, update: update);
-
-            if (res == null)
-            {
-                session.AbortTransaction();
-                throw new ArgumentOutOfRangeException();
-            }
-
-            session.CommitTransaction();
+            var res = _characters.UpdateOne(filter: ch => ch.UserID == userId && ch.ID == characterId, update: update) 
+                ?? throw new ArgumentOutOfRangeException();
         }
 
         private static CharacterDTO Convert(CharacterDB ch)
         {
-            var dto = new CharacterDTO(ch.UserID,
+            var dto = new CharacterDTO(ch.ID,
                                        ch.Name,
                                        ch.MaxHealth,
                                        ch.Health,

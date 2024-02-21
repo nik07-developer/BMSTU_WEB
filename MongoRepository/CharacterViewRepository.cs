@@ -123,7 +123,6 @@ namespace MongoRepository
                 throw new ArgumentOutOfRangeException();
             }
 
-            var update = Builders<CharacterViewDB>.Update.Set(ch => ch.CharacterID, characterId);
             var widgets = new List<WidgetViewDB>();
             
             foreach( var wv in newWidgetViews)
@@ -131,7 +130,9 @@ namespace MongoRepository
                 widgets.Add(new() { Name = wv.Name, PosX = wv.PosX, PosY = wv.PosY });
             }
 
-            update.Set(view => view.Widgets, widgets);
+            var update = Builders<CharacterViewDB>.Update
+                .Set(ch => ch.CharacterID, characterId)
+                .Set(view => view.Widgets, widgets);
 
             var res = _views.FindOneAndUpdate(filter: view => view.CharacterID == characterId, update: update);
 
