@@ -1,29 +1,19 @@
 import { useContext, useState } from "react";
 import { ApiContext } from "../context/ApiProvider";
-import { isAxiosError } from "axios";
-import { Character, CharacterScreen } from "../model/Model";
+import { FetchError, FetchState } from "./ApiHooks";
 import { Guid } from "guid-typescript";
+import { CharacterScreen } from "../model/Model";
+import { isAxiosError } from "axios";
 
-export enum FetchState {
-	DEFAULT = 'DEFAULT',
-	LOADING = 'LOADING',
-	SUCCESS = 'SUCCESS',
-	ERROR = 'ERROR'
-}
-
-export type FetchError = {
-	state: FetchState,
-	message?: string
-}
-
-export function useUserRegister() {
+export function useApiGetCharacterScreens() {
 	const [fetchError, setFetchError] = useState<FetchError>({ state: FetchState.DEFAULT });
 	const ctx = useContext(ApiContext);
 
-	const register = async (login: string, password: string, name: string) => {
+	const getScreens = async (guid: Guid, setScreens: (screens: CharacterScreen[]) => void) => {
 		try {
 			setFetchError({ state: FetchState.LOADING });
-			const response = await ctx.axiosInstance.post('/users', {login, password, name});
+			const response = await ctx.axiosInstance.get(`/character/${guid.toString()}/view-configs`);
+			setScreens([response.data as CharacterScreen]);
 			setFetchError({ state: FetchState.SUCCESS });
 		}
 		catch (e: unknown) {
@@ -34,5 +24,5 @@ export function useUserRegister() {
 		}
 	};
 
-	return [fetchError, register] as const;
+	return [fetchError, getScreens] as const;
 }

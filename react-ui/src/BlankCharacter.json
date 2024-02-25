@@ -1,5 +1,6 @@
 {
     "name": "Безымянный персонаж",
+    "stored_on_server": false,
     "max_health": 24,
     "health": 10,
     "level": 5,

@@ -1,45 +1,37 @@
 import { Character } from "./Model";
 import BlankCharacter from "../BlankCharacter.json"
+import { Guid } from "guid-typescript"
 
 const character_list_alias = "character_list";
-const screen_list_alias = "screen_list";
 
-export function characterStore(character: Character, old_name?: string) {
+export function characterStore(character: Character, prev_guid?: Guid) {
     const character_list = localStorage.getItem(character_list_alias);
     if (!character_list) {
         localStorage.setItem(character_list_alias, JSON.stringify([character]));
     }
     else {
         let lst = JSON.parse(character_list) as Character[];
-        const idx = lst.findIndex((c) => c.name == (old_name || character.name));
-        const last_idx = lst.findLastIndex((c) => c.name == character.name);
-        if (idx == -1) {
+        const idx = lst.findIndex((c) => c.guid == (prev_guid || character.guid));
+        if (idx == -1)
             lst.push(character);
-        }
-        else if (last_idx == -1 || last_idx == idx) {
+        else
             lst[idx] = character;
-        }
-        else {
-            return false;
-        }
         localStorage.setItem(character_list_alias, JSON.stringify(lst));
     }
 
     return true;
 }
 
-export function characterLoad(character_name: string) {
-    const character_list = localStorage.getItem(character_list_alias);
-    if (!character_list)
-        return undefined;
-
-    return (JSON.parse(character_list) as Character[]).find((c) => c.name = character_name);
+export function getBlankCharacter(guid?: Guid) {
+    let c = JSON.parse(JSON.stringify(BlankCharacter)) as Character;
+    c.guid = guid || Guid.create();
+    return c;
 }
 
 export function characterGetAny() {
     const character_list = localStorage.getItem(character_list_alias);
     if (!character_list) {
-        const chr = JSON.parse(JSON.stringify(BlankCharacter)) as Character;
+        const chr = getBlankCharacter();
         characterStore(chr);
         return chr;
     }
@@ -48,10 +40,22 @@ export function characterGetAny() {
     }
 }
 
+export function characterGetById(guid: Guid) {
+    const character_list = localStorage.getItem(character_list_alias);
+    if (!character_list) {
+        return undefined;
+    }
+    else {
+        const list = JSON.parse(character_list) as Character[];
+        return list.find(c => c.guid == guid);
+    }
+}
+
+
 export function characterGetAll() {
     const character_list = localStorage.getItem(character_list_alias);
     if (!character_list) {
-        const chr = JSON.parse(JSON.stringify(BlankCharacter)) as Character;
+        const chr = getBlankCharacter();
         characterStore(chr);
         return [chr];
     }
@@ -62,7 +66,7 @@ export function characterGetAll() {
 
 export function characterCreate() {
     const character_list = localStorage.getItem(character_list_alias);
-    let new_chr = JSON.parse(JSON.stringify(BlankCharacter)) as Character;
+    let new_chr = getBlankCharacter();
     if (!character_list) {
         localStorage.setItem(character_list_alias, JSON.stringify([new_chr]));
     }
@@ -83,11 +87,11 @@ export function characterCreate() {
     }
 }
 
-export function characterRemove(name: string) {
+export function characterRemove(guid: Guid) {
     const character_list = localStorage.getItem(character_list_alias);
     if (character_list) {
         let lst = JSON.parse(character_list) as Character[];
-        lst = lst.filter((c) => c.name != name);
+        lst = lst.filter((c) => c.guid != guid);
         localStorage.setItem(character_list_alias, JSON.stringify(lst));
     }
 }

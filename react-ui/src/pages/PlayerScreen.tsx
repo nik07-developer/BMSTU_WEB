@@ -1,6 +1,5 @@
 import { memo, useContext, useState } from "react";
-import { Character, ScreenWidget, characterClone } from "../model/Model";
-import { useUserLogout } from "../api/ApiHooks";
+import { Character, CharacterScreen, ScreenWidget, characterClone } from "../model/Model";
 import Drawer from "@mui/material/Drawer"
 import { styled, useTheme } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton";
@@ -13,6 +12,11 @@ import { htmlByWxName } from "../components/widgets/Widgets";
 import { useNavigate } from "react-router-dom";
 import { Close, Delete } from "@mui/icons-material";
 import { ApiContext } from "../context/ApiProvider";
+import { useLogout } from "../api/ApiLogon";
+import { ApiCharacter, useApiCreateCharacter, useApiGetCharacter, useUpdateCharacter as useApiUpdateCharacter } from "../api/ApiCharacter";
+import { characterComposeFromApi, characterModelToApi } from "../api/CharacterConvert";
+import { Guid } from "guid-typescript";
+import { useApiGetCharacterScreens } from "../api/ApiView";
 
 interface PlayerScreenProps {
 	character: Character;
@@ -32,7 +36,9 @@ const PlayerScreenContent = memo(function PlayerScreenContent({ character, setCh
 	const theme = useTheme();
 	return (
 		<Box>
-			<IconButton sx={{ m: 2 }} onClick={() => { setLeftOpen(true); }}><MenuIcon /></IconButton>
+			<IconButton sx={{ m: 2 }} onClick={() => { setLeftOpen(true); }}>
+				<MenuIcon />
+			</IconButton>
 			{character && (character.screens[activeScreen].widgets.map((wx: ScreenWidget, wxIndex: number) => {
 				return (
 					<Draggable defaultPosition={{ x: wx.posx, y: wx.posy }} position={{ x: wx.posx, y: wx.posy }} disabled={!editMode}
@@ -55,17 +61,51 @@ function PlayerScreen({ character, setCharacter }: PlayerScreenProps) {
 	const navigate = useNavigate();
 	const theme = useTheme();
 	const authCtx = useContext(ApiContext);
-	const [fetchError, onLogout] = useUserLogout();
+	const [fetchError, apiLogout] = useLogout();
 	const [leftOpen, setLeftOpen] = useState(true);
-	const [rightOpen, setRightOpen] = useState(true);
+	//const [rightOpen, setRightOpen] = useState(true);
 	const [activeScreen, setActiveScreen] = useState(0);
 	const [editMode, setEditMode] = useState(false);
-	const [newCharacterName, setNewCharacterName] = useState(character.name);
+	const [characterUpdateResult, updateCharacter] = useApiUpdateCharacter();
+	const [characterCreateResult, createCharacter] = useApiCreateCharacter();
+	const [characterGetResult, getCharacter] = useApiGetCharacter();
+	const [characterViewGetResult, getCharacterView] = useApiGetCharacterScreens();
+
 
 	const toggleEditMode = () => {
-		if (editMode && newCharacterName != character.name)
-			characterRename(newCharacterName);
 		setEditMode(!editMode);
+	}
+
+	const onLogout = async () => {
+		await apiLogout();
+		localStorage.removeItem("token");
+		authCtx.setAuthorised(false);
+	}
+
+	const characterToServer = async () => {
+		if (character.stored_on_server) {
+			await updateCharacter(character.guid, characterModelToApi(character));
+		}
+		else {
+			const onCreateCharacterReceiveGuid = (guid: Guid) => {
+				let new_character = characterClone(character);
+				new_character.stored_on_server = true;
+				new_character.guid = guid;
+				setCharacter(new_character);
+			}
+
+			await createCharacter(characterModelToApi(character), onCreateCharacterReceiveGuid);
+		}
+	}
+
+	const characterFromServer = async () => {
+		let ch: ApiCharacter = characterModelToApi(character);
+		let sc: CharacterScreen[] = character.screens;
+
+		await getCharacter(character.guid, c => ch = c);
+		await getCharacterView(character.guid, s => sc = s);
+
+		setCharacter(characterClone(characterComposeFromApi(ch, sc)));
 	}
 
 	const exportJson = () => {
@@ -83,12 +123,11 @@ function PlayerScreen({ character, setCharacter }: PlayerScreenProps) {
 		let chr = characterClone(character);
 		chr.name = name || "";
 		setCharacter(chr);
-	}
+	};
 
 	const onCharacterNameChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
 		ev.preventDefault();
-		setNewCharacterName(ev.currentTarget.value);
-		ev.stopPropagation();
+		characterRename(ev.currentTarget.value);
 	}
 
 	const removeWidget = (idx: number) => {
@@ -99,13 +138,13 @@ function PlayerScreen({ character, setCharacter }: PlayerScreenProps) {
 
 	const addWidget = (name: string) => {
 		let chr = characterClone(character);
-		chr.screens[activeScreen].widgets.push({name: name, posx: 300, posy: 300});
+		chr.screens[activeScreen].widgets.push({ name: name, posx: 300, posy: 300 });
 		setCharacter(chr);
 	}
 
 	return (
 		<Box sx={{ display: 'flex' }}>
-			<PlayerScreenContent character={character} setCharacter={setCharacter} activeScreen={activeScreen} editMode={editMode} setLeftOpen={setLeftOpen} removeWidget={removeWidget}/>
+			<PlayerScreenContent character={character} setCharacter={setCharacter} activeScreen={activeScreen} editMode={editMode} setLeftOpen={setLeftOpen} removeWidget={removeWidget} />
 			<Drawer variant="persistent" anchor="left" open={leftOpen}>
 				<Box display="flex" flexDirection="row" alignItems="center" justifyContent="space-between" sx={{ backgroundColor: theme.palette.secondary.main }}>
 					{editMode && (
@@ -122,13 +161,17 @@ function PlayerScreen({ character, setCharacter }: PlayerScreenProps) {
 				</Box>
 				<List sx={{ "& Button": { variant: "text", p: 1, m: -1, minWidth: 1, justifyContent: "left" } }}>
 					{!authCtx.authorised && (<ListItem><Button onClick={() => { navigate("/login"); }}>
-							Войти</Button></ListItem>)}
+						Войти</Button></ListItem>)}
 					{!authCtx.authorised && (<ListItem><Button onClick={() => { navigate("/register"); }}>
-							Зарегистрироваться</Button></ListItem>)}
+						Зарегистрироваться</Button></ListItem>)}
 					{authCtx.authorised && (<ListItem><Typography>
-							{authCtx.getUsername()}</Typography></ListItem>)}
+						{authCtx.getUsername()}</Typography></ListItem>)}
+					{authCtx.authorised && (<ListItem><Button onClick={characterToServer}>
+						Загрузить на сервер</Button></ListItem>)}
+					{authCtx.authorised && (<ListItem><Button onClick={characterFromServer}>
+						Загрузить из сервера</Button></ListItem>)}
 					{authCtx.authorised && (<ListItem><Button onClick={onLogout}>
-							Выйти</Button></ListItem>)}
+						Выйти</Button></ListItem>)}
 					<Divider sx={{ m: 1 }} />
 					<ListItem><Button disabled={true}>
 						В режим ГМ'а</Button></ListItem>

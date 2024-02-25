@@ -1,12 +1,27 @@
-import { FormEvent } from "react";
+import { FormEvent, useContext } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FetchState, useUserLogin } from "../api/ApiHooks";
+import { FetchState } from "../api/ApiHooks";
 import { TextField, Button, Typography, Stack, Alert, AlertTitle } from "@mui/material";
+import { useLogin } from "../api/ApiLogon";
+import { ApiContext } from "../context/ApiProvider";
 
 function LoginPage() {
 	const navigate = useNavigate();
 	const prevRoute = useLocation();
-	const [getUserError, getUser] = useUserLogin();
+	const [getUserError, getUser] = useLogin();
+	const apiCtx = useContext(ApiContext);
+
+	const onTokenReceive = (token: string) => {
+		if (token) {
+			localStorage.setItem("token", token);
+			apiCtx.setAuthorised(true);
+			navigate("/player-screen");
+		}
+		else {
+			localStorage.removeItem("token");
+			apiCtx.setAuthorised(false);
+		}
+	}
 
 	const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -15,11 +30,7 @@ function LoginPage() {
 		const username = data.get("username") as string;
 		const password = data.get("password") as string;
 
-		await getUser(username, password);
-	}
-
-	if (getUserError.state == FetchState.SUCCESS) {
-		navigate("/player-screen");
+		await getUser(username, password, onTokenReceive);
 	}
 
 	return (

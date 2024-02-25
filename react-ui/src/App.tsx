@@ -6,40 +6,36 @@ import PlayerScreen from './pages/PlayerScreen';
 import ApiProvider from './context/ApiProvider';
 import { useState } from 'react';
 import { Character } from './model/Model';
-import { characterCreate, characterGetAll, characterGetAny, characterRemove, characterStore } from './model/ChracterList';
+import { characterCreate, characterGetAny, characterGetById, characterRemove, characterStore } from './model/ChracterList';
 import CharacterSelectionPage from './pages/CharacterSelectionPage';
+import { Guid } from 'guid-typescript';
 
 function App() {
-	const [characters, setCharacters] = useState(characterGetAll());
-	const [activeCharacter, setActiveCharacter] = useState(characters[0].name);
+	//const [characters, setCharacters] = useState(characterGetAll());
+	const [character, setCharacter] = useState(characterGetAny());
 
 	const updateCharacter = (c: Character) => {
-		if (c.name != "" && characterStore(c, activeCharacter)) {
-			setCharacters(characterGetAll());
-			setActiveCharacter(c.name);
-		}
+		if (characterStore(c, character.guid))
+			setCharacter(c);
 	}
 
-	const selectCharacter = (name: string) => {
-		setActiveCharacter(name);
+	const selectCharacter = (guid: Guid) => {
+		const c = characterGetById(guid);
+		if (c)
+			setCharacter(c);
 	}
 
 	const addCharacter = () => {
 		characterCreate();
-		setCharacters(characterGetAll());
 	}
 
-	const removeCharacter = (name: string) => {
-		if (characters.length > 1) {
-			characterRemove(name);
-			setCharacters(characterGetAll());
-			if (activeCharacter == name)
-				setActiveCharacter(characters[0].name);
+	const removeCharacter = (guid: Guid) => {
+		if (guid == character.guid) {
+			characterRemove(guid);
+			characterGetAny();
 		}
-	}
 
-	const getCharacter = (name: string) => {
-		return characters.find(c => c.name == name) || characters[0];
+		characterRemove(guid);
 	}
 
 	return (
@@ -49,11 +45,10 @@ function App() {
 					<Route path="/" element={<HomePage />} />
 					<Route path="/login" element={<LoginPage />} />
 					<Route path="/register" element={<RegisterPage />} />
-					<Route path="/player-screen" element={<PlayerScreen character={getCharacter(activeCharacter)} setCharacter={updateCharacter} />} />
+					<Route path="/player-screen" element={<PlayerScreen character={character} setCharacter={updateCharacter} />} />
 					<Route path="/character-selection" element={
 						<CharacterSelectionPage
-							characters={characters}
-							activeCharacter={getCharacter(activeCharacter)}
+							activeCharacter={character}
 							setActiveCharacter={selectCharacter}
 							characterAdd={addCharacter}
 							characterRemove={removeCharacter} />} />

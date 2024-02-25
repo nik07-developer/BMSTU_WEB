@@ -1,14 +1,19 @@
 import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import { useUserLogout } from "../api/ApiHooks";
 import { ApiContext } from "../context/ApiProvider";
 import { Button, Box, Container, Stack, Grid, useTheme } from "@mui/material";
+import { useLogout } from "../api/ApiLogon";
 
 function HomePage() {
 	const apiContext = useContext(ApiContext);
-	const [fetchError, onLogout] = useUserLogout();
+	const [fetchError, apiLogout] = useLogout();
 	const navigate = useNavigate();
 
+	const onLogout = async () => {
+		await apiLogout();
+		localStorage.removeItem("token");
+		apiContext.setAuthorised(false);
+	}
 	const toLogin = () => { navigate("/login"); };
 	const toRegister = () => { navigate("/register"); };
 	const toPlayerScreen = () => { navigate("/player-screen"); };

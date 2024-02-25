@@ -1,3 +1,4 @@
+import { Guid } from "guid-typescript";
 import { ReactElement } from "react";
 
 export type CharacterAttribute = {
@@ -45,7 +46,8 @@ export type CharacterAttributes = {
 }
 
 export type Character = {
-	id?: string;
+	guid: Guid;
+	stored_on_server: true;
 	name: string;
 	max_health: number;
 	health: number;
