@@ -1,4 +1,4 @@
-import { Alert, AlertTitle, Button, Stack, TextField, Typography } from "@mui/material";
+import { Alert, AlertTitle, Button, CircularProgress, Stack, TextField, Typography } from "@mui/material";
 import { FormEvent, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FetchState, useUserRegister } from "../api/ApiHooks";
@@ -19,7 +19,6 @@ function RegisterPage() {
             setError("Пароли должны совпадать");
         else {
             await register(username, password, email);
-            navigate("/login");
         }
     }
 
@@ -34,11 +33,19 @@ function RegisterPage() {
 				{fetchError.message || error}
 			</Alert>
 			}
+            {fetchError.state == FetchState.SUCCESS &&
+                <Alert variant="standard" severity="success" sx={{width: "223px"}}>
+                    <AlertTitle>Успех</AlertTitle>
+                    Пользователь успешно зарегистрирован
+                </Alert>
+            }
             <TextField required type="email" name="email" label="Электронная почта" />
             <TextField required name="username" label="Имя пользователя" />
             <TextField required type="password" name="password" label="Пароль" />
             <TextField required type="password" name="password-confirm" label="Подтверждение пароля" />
-            <Button type="submit" variant="contained">Зарегистрироваться</Button>
+            {fetchError.state != FetchState.LOADING &&
+                <Button type="submit" variant="contained">Зарегистрироваться</Button>}
+            {fetchError.state == FetchState.LOADING && <CircularProgress/>}
         </Stack>
     )
 }
