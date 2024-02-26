@@ -1,4 +1,5 @@
 ﻿using DataAccess.DTO;
+using DataAccess.DTO.User;
 using DataAccess.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -33,7 +34,12 @@ namespace DataAccess.Repositories
 			return new UserDTO(id, "login", "passowrd", "name");
 		}
 
-		public void UpdateName(Guid id, string name)
+        public void Update(Guid id, UpdateUserDTO update)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateName(Guid id, string name)
 		{
 
 		}

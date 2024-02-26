@@ -1,4 +1,5 @@
 ﻿using DataAccess.DTO;
+using DataAccess.DTO.Character;
 using DataAccess.Interfaces;
 using Models.Character;
 using System;
@@ -30,6 +31,11 @@ namespace DataAccess.Repositories
         }
 
         public List<CharacterDTO> GetAll(Guid userId)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void Update(Guid userId, Guid characterId, UpdateCharacterDTO updateDTO)
         {
             throw new NotImplementedException();
         }

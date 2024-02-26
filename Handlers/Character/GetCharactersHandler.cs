@@ -20,7 +20,6 @@ namespace Handlers.Character
 
             try
             {
-                Console.WriteLine("Try");
                 var list = _repository.GetAll(request.UserId);
                 var characters = new List<Models.Character.Character>();
 

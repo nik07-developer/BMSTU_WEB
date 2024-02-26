@@ -2,6 +2,7 @@
 using Models.Character.Responses;
 
 using DataAccess.Interfaces;
+using DataAccess.DTO.Character;
 
 namespace Handlers.Character
 {
@@ -20,7 +21,15 @@ namespace Handlers.Character
 
             try
             {
-                UpdateCharacter(request);
+                var changes = new UpdateCharacterDTO(request.Name,
+                                                     request.MaxHealth,
+                                                     request.Health,
+                                                     request.Level,
+                                                     request.ArmorClass,
+                                                     request.Attributes,
+                                                     request.Skills);
+
+                _repository.Update(request.UserId, request.CharacterId, changes);
                 response.Code = UpdateCharacterResponse.OK;
             }
             catch (ArgumentException)
@@ -33,44 +42,6 @@ namespace Handlers.Character
             }
 
             return response;
-        }
-
-        private void UpdateCharacter(UpdateCharacterRequest rq)
-        {
-            if (rq.Name != null)
-            {
-                _repository.UpdateName(rq.UserId, rq.CharacterId, rq.Name);
-            }
-
-            if  (rq.MaxHealth != null)
-            {
-                _repository.UpdateMaxHealth(rq.UserId, rq.CharacterId, (int) rq.MaxHealth);
-            }
-
-            if (rq.Health != null)
-            {
-                _repository.UpdateHealth(rq.UserId, rq.CharacterId, (int) rq.Health);
-            }
-
-            if (rq.Level != null)
-            {
-                _repository.UpdateLevel(rq.UserId, rq.CharacterId, (int)rq.Level);
-            }
-
-            if (rq.ArmorClass != null)
-            {
-                _repository.UpdateArmorClass(rq.UserId, rq.CharacterId, (int)rq.ArmorClass);
-            }
-
-            if (rq.Attributes != null)
-            {
-                _repository.UpdateAttributes(rq.UserId, rq.CharacterId, rq.Attributes);
-            }
-
-            if (rq.Skills != null)
-            {
-                _repository.UpdateSkills(rq.UserId, rq.CharacterId, rq.Skills);
-            }
         }
     }
 }

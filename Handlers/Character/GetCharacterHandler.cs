@@ -20,8 +20,11 @@ namespace Handlers.Character
 
             try
             {
+                Console.WriteLine("Handle GET");
                 response.Character = _repository.Get(request.UserId, request.CharacterId);
                 response.Code = GetCharacterResponse.OK;
+
+                Console.WriteLine("Handle GET OK");
             }
             catch (ArgumentException)
             {

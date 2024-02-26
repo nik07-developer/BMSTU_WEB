@@ -70,11 +70,10 @@ namespace Web.Controllers
 
         [HttpPatch("/users")]
         [Authorize]
-        public IActionResult Patch([FromBody] Dictionary<string, string> userChanges)
+        public IActionResult Patch([FromBody] UserChangeDTO userChanges)
         {
             var userId = this.GetUID();
-
-            var rq = new UpdateUserRequest(userId, userChanges);
+            var rq = new UpdateUserRequest(userId, userChanges.Name, userChanges.Password);
             var res = _updateHandler.Handle(rq);
 
             return res.Code switch
