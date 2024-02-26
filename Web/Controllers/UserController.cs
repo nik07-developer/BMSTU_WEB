@@ -14,7 +14,7 @@ using Web.Controllers.Extensions;
 namespace Web.Controllers
 {
     [ApiController]
-    [Route("/users")]
+    [Route("/api/users")]
     public class UserController : ControllerBase
     {
         private readonly CreateUserHandler _createHandler;
@@ -33,7 +33,7 @@ namespace Web.Controllers
             _getHandler = getHandler;
         }
 
-        [HttpPost]
+        [HttpPost("/api/users")]
         public ActionResult<Guid> Post([FromBody] UserCreationDTO user)
         {
             //Console.WriteLine($"Hello {user.Name} aka {user.Login}:) your password: $#%{user.Password}^&*");
@@ -50,7 +50,7 @@ namespace Web.Controllers
             };
         }
 
-        [HttpGet("/users")]
+        [HttpGet("/api/users")]
         [Authorize]
         public ActionResult<UserDTO> Get()
         {
@@ -68,7 +68,7 @@ namespace Web.Controllers
             };
         }
 
-        [HttpPatch("/users")]
+        [HttpPatch("/api/users")]
         [Authorize]
         public IActionResult Patch([FromBody] UserChangeDTO userChanges)
         {
@@ -85,7 +85,7 @@ namespace Web.Controllers
             };
         }
 
-        [HttpDelete("/users")]
+        [HttpDelete("/api/users")]
         [Authorize]
         public IActionResult Delete()
         {

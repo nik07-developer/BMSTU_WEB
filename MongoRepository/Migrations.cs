@@ -5,21 +5,30 @@ using MongoDB.Bson;
 using Models.Character;
 using Models.User;
 
-/*
-var client = new MongoClient("mongodb://localhost:8081");
-var db = client.GetDatabase("web");
-
-db.CreateCollection("users");
-db.CreateCollection("characters");
-db.CreateCollection("views");*/
-
-/*
-var users = db.GetCollection<UserDB>("users");
-var doc = new UserDB()
+public class Migrations
 {
-    Login = "admin",
-    Password = "admin",
-    Name = "aboba",
-};
+    public Migrations()
+    {
+        Init();
+    }
 
-users.InsertOne(doc);*/
+    public void Init()
+    {
+        var client = new MongoClient(MongoConfig.DB_ADDRESS);
+        var db = client.GetDatabase(MongoConfig.DB_NAME);
+
+        db.CreateCollection(MongoConfig.USERS_COLLECTION);
+        db.CreateCollection(MongoConfig.CHARACTERS_COLLECTION);
+        db.CreateCollection(MongoConfig.VIEWS_COLLECTION);
+
+        var users = db.GetCollection<UserDB>(MongoConfig.USERS_COLLECTION);
+        var doc = new UserDB()
+        {
+            Login = "admin",
+            Password = "admin",
+            Name = "aboba",
+        };
+
+        users.InsertOne(doc);
+    }
+}

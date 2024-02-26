@@ -27,7 +27,7 @@ namespace Web.Controllers
             _getHandler = authHandler;
         }
 
-        [HttpPost("/login")]
+        [HttpPost("/api/login")]
 		public IActionResult Login([FromBody] UserLoginDTO body)
 		{
 
@@ -50,7 +50,7 @@ namespace Web.Controllers
             };
         }
 
-        [HttpPost("/refresh")]
+        [HttpPost("/api/refresh")]
         [Authorize]
         public IActionResult Refresh()
         {

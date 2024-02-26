@@ -16,7 +16,7 @@ using Models.View.Responses;
 namespace Web.Controllers
 {
     [ApiController]
-    [Route("/characters/{character_id}/view-configs")]
+    [Route("/api/characters/{character_id}/view-configs")]
     public class ViewConfigController : ControllerBase
     {
         private readonly CreateViewHandler _createHandler;

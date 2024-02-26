@@ -16,6 +16,11 @@ using System.Text;
 using DataAccess.Repositories;
 using DataAccess.Interfaces;
 
+var cli = new MongoClient(MongoConfig.DB_ADDRESS);
+foreach(var a in cli.ListDatabaseNames().ToList())
+{
+    Console.WriteLine(a);
+}
 
 const string allowAllPolicy = "_allow_all";
 

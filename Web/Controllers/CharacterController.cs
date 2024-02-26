@@ -15,7 +15,7 @@ using Web.Controllers.Extensions;
 namespace Web.Controllers
 {
     [ApiController]
-    [Route("/characters")]
+    [Route("/api/characters")]
     public class CharacterController : ControllerBase
     {
         private readonly CreateCharacterHandler _createHandler;
@@ -61,7 +61,7 @@ namespace Web.Controllers
             };
         }
 
-        [HttpGet]
+        [HttpGet("/api/characters")]
         [Authorize]
         public ActionResult<List<CharacterDTO>> GetAll()
         {
@@ -77,7 +77,7 @@ namespace Web.Controllers
             };
         }
 
-        [HttpGet("/characters/{character_id}")]
+        [HttpGet("/api/characters/{character_id}")]
         [Authorize]
         public ActionResult<CharacterDTO> Get(Guid character_id)
         {
@@ -93,7 +93,7 @@ namespace Web.Controllers
             };
         }
 
-        [HttpDelete("/characters/{character_id}")]
+        [HttpDelete("/api/characters/{character_id}")]
         [Authorize]
         public IActionResult Delete(Guid character_id)
         {
@@ -109,7 +109,7 @@ namespace Web.Controllers
             };
         }
 
-        [HttpPatch("/characters/{character_id}")]
+        [HttpPatch("/api/characters/{character_id}")]
         [Authorize]
         public IActionResult Patch(Guid character_id, 
                                    [FromBody] CharacterChangeDTO changes)
